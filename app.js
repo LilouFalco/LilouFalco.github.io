@@ -38,16 +38,10 @@ dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog
 dialog.addEventListener('close',()=>{dialog.querySelector('video')?.pause();document.body.style.overflow='';lastProject?.focus({preventScroll:true});if(discovered.size===5&&!sessionStorage.getItem('explorer')){sessionStorage.setItem('explorer','1');const toast=toastEl;if(!toast)return;toast.textContent='✦ Succès débloqué · Curiosité niveau maximum !';toast.classList.add('visible');setTimeout(()=>toast.classList.remove('visible'),4500);}});
 dialog.addEventListener('keydown',event=>{if(activeProject?.images?.length>1){if(event.key==='ArrowRight'){event.preventDefault();slide(1);}if(event.key==='ArrowLeft'){event.preventDefault();slide(-1);}}});
 }
-document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{
- document.querySelectorAll('[data-filter]').forEach(b=>{const selected=b===button;b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',String(selected));});
- document.querySelectorAll('[data-category]').forEach(card=>{card.hidden=button.dataset.filter!=='all'&&card.dataset.category!==button.dataset.filter;});
- const status=document.querySelector('#filter-status');if(status)status.textContent=document.querySelectorAll('[data-category]:not([hidden])').length+' créations affichées';
-}));
 const trips={
  japon:{number:"01",date:"MAI 2023",title:"Japon, entre pixels<br>et poésie.",text:"À Tokyo et Yokohama, les univers se croisent. L’imaginaire du musée Ghibli, l’effervescence de Shibuya et d’Akihabara, le calme des temples et des jardins. Une escapade entre culture pop et découvertes.",tags:["Tokyo","Yokohama","Culture pop"],emote:12},
  coree:{number:"02",date:"DÉCEMBRE 2023",title:"Corée du Sud,<br>mille contrastes.",text:"De Séoul à Busan, un voyage entre palais, marchés et quartiers créatifs. Hongdae, les ruelles colorées de Gamcheon et le temple Haedong Yonggungsa, au bord de la mer. Des découvertes à chaque détour.",tags:["Séoul","Busan","Art & traditions"],emote:7},
  vietnam:{number:"03",date:"MARS 2026",title:"Vietnam,<br>prendre le temps.",text:"Des rues de Hanoï aux rizières de Pú Luông, puis du kayak dans la baie de Lan Ha aux barques de Trang An. À Hoi An, les lanternes et les ateliers d’artisanat prolongent le voyage. Une parenthèse entre nature et savoir-faire.",tags:["Hanoï","Lan Ha","Hoi An"],emote:3},
- thailande:{number:"04",date:"DESTINATION EXPLORÉE",title:"Thaïlande,<br>une page du carnet.",text:"La Thaïlande fait aussi partie de mes découvertes en Asie. Un tampon de plus dans ce carnet, et toujours cette envie de partir à la rencontre d’autres cultures.",tags:["Découverte","Curiosité","Asie"],emote:1}
 };
 const tripButtons=[...document.querySelectorAll('[data-trip]')];
 function chooseTrip(button,focus=false){

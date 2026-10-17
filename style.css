@@ -19,3 +19,37 @@ body:before{content:'';position:fixed;inset:0;z-index:50;pointer-events:none;bac
 @media(prefers-reduced-motion:reduce){body:before{display:none}}
 .floating-spark,.hero-location>span:first-child{font-family:var(--body)}
 .glyph-svg{width:1em;height:1em;display:block}.hero-location>span:first-child .glyph-svg{display:inline-block;vertical-align:-.12em}
+
+/* review round 3 */
+.inventory{display:grid;gap:11px;padding:15px 18px;justify-content:stretch}
+.inv-row{display:grid;grid-template-columns:92px 1fr;gap:10px;align-items:start}
+.inv-title{font:9px/1.9 var(--pixel);color:#8a947f;letter-spacing:.8px}
+.inv-badges{display:flex;flex-wrap:wrap;gap:5px}
+.badge{font-size:10px;line-height:1.4;padding:3px 8px;background:#e7eddf;color:#4d6446;border:1px solid #cdd8c0;white-space:normal}
+.badge.pink{background:#f6e4e8;color:#8f5668;border-color:#e6c6cf}
+.badge b{font:12px var(--pixel);margin:0 2px}.badge small{font-size:8px;opacity:.75;letter-spacing:.6px}
+@media(max-width:600px){.inv-row{grid-template-columns:1fr;gap:4px}.badge{font-size:11px}.inventory{padding:14px 16px}}
+.project-tabs{justify-content:flex-start;gap:8px;flex-wrap:wrap}
+.project-tabs a{font-size:11px;padding:8px 12px;border:1px solid #cdd8c0;background:#eef0e6;color:var(--ink);text-decoration:none}
+.project-tabs a:hover,.project-tabs a:focus-visible{background:#e7eddf;box-shadow:2px 2px #c6d1ba}
+.project-tabs a span{font-size:9px;border-left:1px solid #b6c1ab;margin-left:8px;padding-left:8px}
+.project-group{margin-bottom:46px;scroll-margin-top:100px}
+.group-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:20px;padding-bottom:10px;border-bottom:1px dashed #c9cfbd}
+.group-title{font:24px var(--pixel);margin:0;letter-spacing:1px}
+.group-note{font-size:10px;letter-spacing:1.4px;color:var(--muted);font-weight:700}
+.school-card .project-info{padding-top:22px}
+.stamp-locked{cursor:not-allowed;opacity:.75;border-style:dotted;transform:rotate(3deg)}
+.stamp-locked:hover{transform:rotate(3deg)}
+.stamp-locked .stamp-drawing svg{width:28px;height:28px}
+.pixel-lock svg{width:34px;height:34px}
+main:has(>#contact){display:flex;flex-direction:column}
+.contact{flex:1;display:flex;align-items:center;padding:50px 0}
+.contact .contact-layout{width:100%}
+.contact-avatar{gap:14px}
+.contact-avatar>img{width:300px;height:auto;mix-blend-mode:normal;transform:none;margin:0 auto;display:block}
+.contact-speech{transform:none}
+.contact-hearts{letter-spacing:.8em!important;padding-left:.8em;text-align:center}
+.contact-routes{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.contact-routes a{font-size:11px;padding:8px 13px;border:1px dashed #9a7a88;color:#7d5f6b;text-decoration:none;background:#f1e6e8}
+.contact-routes a:hover,.contact-routes a:focus-visible{background:#f8eeec;box-shadow:2px 2px #ccb0bb}
+@media(max-width:600px){.contact-avatar>img{width:230px}.contact{padding:36px 0 30px}.contact-avatar{width:100%}}

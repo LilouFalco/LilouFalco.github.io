@@ -217,3 +217,27 @@ html.scene-arriving .scene-curtain{transform:translate3d(0,0,0)}
  input,textarea,[contenteditable="true"]{cursor:text}
  button:disabled,[aria-disabled="true"]{cursor:default}
 }
+
+/* Playable atlas. Zoom/pan affect only SVG geometry inside its own viewport. */
+.map-layout figure{position:relative}
+.map-viewport{position:relative;width:100%;overflow:hidden;touch-action:pan-y;cursor:crosshair;outline-offset:3px}
+.map-viewport.is-zoomed{touch-action:none;cursor:grab}
+.map-viewport.is-dragging{cursor:grabbing}
+.map-viewport:focus-visible{outline:3px solid #b26379}
+.map-interactive-svg{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none}
+.map-interactive-svg [data-country]{outline:none}
+.map-interactive-svg [role=button]{cursor:pointer}
+.map-interactive-svg .map-country-active,.map-interactive-svg [data-country]:focus-visible{stroke:#8d4e66;stroke-width:2;vector-effect:non-scaling-stroke}
+.map-controls{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:10px}
+.map-controls button{width:36px;height:36px;padding:0;border:1px solid #8c9e84;box-shadow:2px 2px #c5d2be;background:#fffdf7;font:20px var(--pixel)}
+.map-controls button:disabled{opacity:.45;box-shadow:none}
+.map-controls output{min-width:38px;text-align:center;font:14px var(--pixel);color:var(--green)}
+.map-country-card{position:absolute;left:18px;top:18px;z-index:3;max-width:calc(100% - 36px);padding:9px 12px;border:1px solid #7d8c72;background:#fffdf7;box-shadow:3px 3px #bfceb8;pointer-events:none}
+.map-europe .map-country-card{top:38px}
+.map-country-card strong{display:block;font:17px var(--pixel);color:var(--ink);line-height:1.2}
+.map-country-card span{display:block;font-size:10px;color:var(--green);margin-top:3px}
+.map-country-card.is-locked{border-color:#b77a8d;background:#f8e8ed;box-shadow:3px 3px #e2bfcb}
+.map-country-card.is-locked span{color:#8c5265}
+.map-controls-help{margin:0;padding:11px 18px;font-size:10px;text-align:center;background:#eef2e9;color:var(--green);border-top:1px dashed #c5d2be}
+.map-europe:has(.map-viewport){display:block}
+@media(max-width:600px){.map-controls button{width:42px;height:42px}.map-country-card{left:10px;top:8px;max-width:calc(100% - 20px)}.map-europe .map-viewport{max-width:270px;margin:auto}.map-controls-help{font-size:10px;padding:12px 16px}}

@@ -313,3 +313,5 @@ main:has(>#contact){display:flex;flex-direction:column}
  .map-country-chip{min-height:30px;padding:4px 8px}
  .travel-stories-heading h2{font-size:28px;margin-top:5px}
 }
+
+@media(max-width:600px){.map-controls-help{white-space:normal;overflow:visible;font-size:8px}.world-map-window{margin-bottom:10px}#voyages.elsewhere{padding-top:39px}}

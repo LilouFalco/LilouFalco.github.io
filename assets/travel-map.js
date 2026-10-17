@@ -204,7 +204,7 @@
  const figures=[...document.querySelectorAll('.map-layout figure')];
  if(figures.length){
   const help=document.createElement('p');help.id='map-controls-help';help.className='map-controls-help';
-  help.textContent='Survolez ou touchez un pays ou son nom · molette, pincement ou + / − pour zoomer · glissez pour explorer';
+  help.textContent='Pays ou noms interactifs · glissez pour explorer · + / −, molette ou pincement';
   document.querySelector('.map-layout').after(help);
   figures.forEach((figure,index)=>setup(figure,index).catch(()=>{
    // The original static map remains usable even if enhancement fails.

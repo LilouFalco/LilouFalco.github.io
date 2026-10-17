@@ -123,7 +123,7 @@ main:has(>#contact){display:flex;flex-direction:column}
 
 /* Travel save slots: a compact route above one playable destination. */
 .level-select.travel-layout{display:block}
-.travel-timeline.stamp-list{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;padding:28px 32px 23px;border-right:0;border-bottom:1px solid #c9cfbd;background:#f4f0e4}
+.travel-timeline.stamp-list{position:relative;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;padding:28px 32px 23px;border-right:0;border-bottom:1px solid #c9cfbd;background:#f4f0e4}
 .travel-timeline:before{content:'';position:absolute;top:62px;left:10%;right:10%;height:2px;background:repeating-linear-gradient(90deg,#b6c3a8 0 6px,transparent 6px 10px);pointer-events:none}
 .travel-timeline .timeline-stop{border:0;background:none;box-shadow:none;transform:none;min-height:104px;padding:0 2px;gap:0;justify-content:flex-start;color:#637057;transition:transform .18s}
 .travel-timeline .stamp-drawing{width:68px;height:68px;display:grid;place-items:center;border:1px solid #b9c6ac;background:#f9f6ed;box-shadow:3px 3px #dce2d0;margin:0 0 12px}

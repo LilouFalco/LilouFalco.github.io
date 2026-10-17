@@ -49,9 +49,10 @@ dialog.addEventListener('keydown',event=>{if(activeProject?.images?.length>1){if
 }
 const trips={
  thailande:{number:"01",date:"2016",title:"Thaïlande,<br>un très beau souvenir.",text:"J’ai séjourné à Bangkok et pris le temps de découvrir la ville. J’ai beaucoup aimé la Thaïlande, un pays dont je garde un très beau souvenir.",tags:["Bangkok","Découvertes"],emote:7},
- japon:{number:"02",date:"MAI 2023",title:"Japon, entre pixels<br>et poésie.",text:"À Tokyo et Yokohama, les univers se croisent. L’imaginaire du musée Ghibli, l’effervescence de Shibuya et d’Akihabara, le calme des temples et des jardins. Une escapade entre culture pop et découvertes.",tags:["Tokyo","Yokohama","Culture pop"],emote:12},
- coree:{number:"03",date:"DÉCEMBRE 2023",title:"Corée du Sud,<br>mille contrastes.",text:"De Séoul à Busan, un voyage entre palais, marchés et quartiers créatifs. Hongdae, les ruelles colorées de Gamcheon et le temple Haedong Yonggungsa, au bord de la mer. Des découvertes à chaque détour.",tags:["Séoul","Busan","Art & traditions"],emote:7},
- vietnam:{number:"04",date:"MARS 2026",title:"Vietnam,<br>prendre le temps.",text:"Des rues de Hanoï aux rizières de Pú Luông, puis du kayak dans la baie de Lan Ha aux barques de Trang An. À Hoi An, les lanternes et les ateliers d’artisanat prolongent le voyage. Une parenthèse entre nature et savoir-faire.",tags:["Hanoï","Lan Ha","Hoi An"],emote:3},
+ maroc:{number:"02",date:"2021",title:"Maroc,<br>un projet solidaire.",text:"Avec ADEN’S, contribuer à la réhabilitation d’une oasis à M’Hamid. Partenariats, collecte de fonds et sensibilisation.",tags:["M’Hamid","ADEN’S","Projet humanitaire"],emote:3},
+ japon:{number:"03",date:"MAI 2023",title:"Japon, entre pixels<br>et poésie.",text:"À Tokyo et Yokohama, les univers se croisent. L’imaginaire du musée Ghibli, l’effervescence de Shibuya et d’Akihabara, le calme des temples et des jardins. Une escapade entre culture pop et découvertes.",tags:["Tokyo","Yokohama","Culture pop"],emote:12},
+ coree:{number:"04",date:"DÉCEMBRE 2023",title:"Corée du Sud,<br>mille contrastes.",text:"De Séoul à Busan, un voyage entre palais, marchés et quartiers créatifs. Hongdae, les ruelles colorées de Gamcheon et le temple Haedong Yonggungsa, au bord de la mer. Des découvertes à chaque détour.",tags:["Séoul","Busan","Art & traditions"],emote:7},
+ vietnam:{number:"05",date:"MARS 2026",title:"Vietnam,<br>prendre le temps.",text:"Des rues de Hanoï aux rizières de Pú Luông, puis du kayak dans la baie de Lan Ha aux barques de Trang An. À Hoi An, les lanternes et les ateliers d’artisanat prolongent le voyage. Une parenthèse entre nature et savoir-faire.",tags:["Hanoï","Lan Ha","Hoi An"],emote:3},
 };
 const tripButtons=[...document.querySelectorAll('[data-trip]')];
 const travelWindow=document.querySelector('.level-select');
@@ -69,7 +70,7 @@ function chooseTrip(button,focus=false){
  travelPanel.innerHTML='<span class="travel-eyebrow">CARNET N° '+trip.number+' · '+trip.date+'</span><h3>'+trip.title+'</h3><p>'+trip.text+'</p><div class="travel-tags">'+trip.tags.map(t=>'<span>'+t+'</span>').join('')+'</div><span class="travel-coordinate">SOUVENIRS COLLECTÉS, CURIOSITÉ RECHARGÉE.</span><img src="assets/emote-'+trip.emote+'.png" width="120" height="120" alt="" class="travel-emote">';
  tripPrev.disabled=tripIndex===0;
  tripNext.disabled=tripIndex===tripButtons.length-1;
- document.querySelector('#trip-progress').textContent='ESCALE '+trip.number+' / 04 · '+button.querySelector('strong').textContent;
+ document.querySelector('#trip-progress').textContent='ESCALE '+trip.number+' / '+String(tripButtons.length).padStart(2,'0')+' · '+button.querySelector('strong').textContent;
  const icon=button.querySelector('.stamp-icon').cloneNode(true);
  icon.classList.add('travel-country-icon');
  travelPanel.prepend(icon);

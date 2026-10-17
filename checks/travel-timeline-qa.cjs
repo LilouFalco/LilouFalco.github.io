@@ -6,19 +6,19 @@ const {chromium}=require('/tmp/qa/node_modules/playwright');const assert=require
   const p=await c.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
   await p.goto((process.env.BASE||'http://localhost:18743')+'/voyages.html');
   const current=()=>p.locator('[data-trip][aria-selected=true]').getAttribute('data-trip');
-  assert.deepEqual(await p.locator('.travel-timeline button').evaluateAll(bs=>bs.map(b=>b.id)),['tab-thailande','tab-japon','tab-coree','tab-vietnam','tab-chine']);
+  assert.deepEqual(await p.locator('.travel-timeline button').evaluateAll(bs=>bs.map(b=>b.id)),['tab-thailande','tab-maroc','tab-japon','tab-coree','tab-vietnam','tab-chine']);
   assert(await p.locator('#trip-prev').isDisabled());
   assert.equal(await current(),'thailande');
   assert.equal(await p.locator('#tab-thailande small').textContent(),'2016');
   assert((await p.locator('.travel-eyebrow').textContent()).includes('01 · 2016'));
-  for(const key of ['japon','coree','vietnam']){await p.locator('#trip-next').click();assert.equal(await current(),key);}
+  for(const key of ['maroc','japon','coree','vietnam']){await p.locator('#trip-next').click();assert.equal(await current(),key);}
   assert(await p.locator('#trip-next').isDisabled());
   assert(await p.locator('#tab-chine').isDisabled());
   assert.equal(await p.locator('#travel-panel').count(),1);
   await p.locator('#travel-panel').focus();await p.keyboard.press('ArrowRight');assert.equal(await current(),'vietnam');
   await p.keyboard.press('Home');assert.equal(await current(),'thailande');
   await p.keyboard.press('ArrowLeft');assert.equal(await current(),'thailande');
-  for(const key of ['coree','thailande','vietnam','japon']){await p.locator('#tab-'+key).click();assert.equal(await current(),key);assert.equal(await p.locator('#travel-panel').getAttribute('aria-labelledby'),'tab-'+key);}
+  for(const key of ['coree','thailande','maroc','vietnam','japon']){await p.locator('#tab-'+key).click();assert.equal(await current(),key);assert.equal(await p.locator('#travel-panel').getAttribute('aria-labelledby'),'tab-'+key);}
   await p.locator('#tab-coree').focus();await p.keyboard.press('ArrowRight');assert.equal(await current(),'vietnam');assert.equal(await p.locator(':focus').getAttribute('id'),'tab-vietnam');
   await p.locator('#trip-prev').click();assert.equal(await current(),'coree');
   if(width<600){
@@ -36,7 +36,11 @@ const {chromium}=require('/tmp/qa/node_modules/playwright');const assert=require
    await swipe(5,-70);assert.equal(await current(),'coree');
   }
   assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
-  await p.locator('#tab-japon').click();
+  await p.locator('#tab-maroc').click();
+  assert.equal(await p.locator('#tab-maroc small').textContent(),'2021');
+  assert((await p.locator('.travel-eyebrow').textContent()).includes('02 · 2021'));
+  assert.equal(await p.locator('#travel-panel p').textContent(),'Avec ADEN’S, contribuer à la réhabilitation d’une oasis à M’Hamid. Partenariats, collecte de fonds et sensibilisation.');
+  assert.equal(await p.locator('#trip-progress').textContent(),'ESCALE 02 / 05 · MAROC');
   await p.screenshot({path:'/home/portfolio/checks/timeline-'+(process.env.BASE?'live-':'')+width+'.png',fullPage:true});
   await p.emulateMedia({reducedMotion:'reduce'});await p.locator('#tab-vietnam').click();
   assert.equal(await p.locator('#travel-panel').evaluate(e=>e.getAnimations().length),0);

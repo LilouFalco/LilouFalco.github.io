@@ -55,5 +55,5 @@
   src: url(assets/font-7.ttf) format('truetype');
 }
 /* decorative symbols fallback (Noto Sans Symbols 2, OFL), only these glyphs */
-@font-face{font-family:'DM Sans';font-style:normal;font-weight:100 900;font-display:swap;src:url(assets/font-symbols.woff2) format('woff2');unicode-range:U+2726-2727,U+2600,U+273A,U+274B,U+2661,U+2665,U+266B,U+271A,U+25A3,U+2316,U+25AA,U+2715,U+25B6,U+25BC,U+2605-2606}
-@font-face{font-family:'Pixelify Sans';font-style:normal;font-weight:400 700;font-display:swap;src:url(assets/font-symbols.woff2) format('woff2');unicode-range:U+2726-2727,U+2600,U+273A,U+274B,U+2661,U+2665,U+266B,U+271A,U+25A3,U+2316,U+25AA,U+2715,U+25B6,U+25BC,U+2605-2606}
+@font-face{font-family:'DM Sans';font-style:normal;font-weight:100 900;font-display:swap;src:url(assets/font-symbols.woff2) format('woff2');unicode-range:U+2726-2727,U+2600,U+273A,U+274B,U+2661,U+2665,U+271A,U+25A3,U+2316,U+25AA,U+2715,U+25B6,U+25BC,U+2605-2606}
+@font-face{font-family:'Pixelify Sans';font-style:normal;font-weight:400 700;font-display:swap;src:url(assets/font-symbols.woff2) format('woff2');unicode-range:U+2726-2727,U+2600,U+273A,U+274B,U+2661,U+2665,U+271A,U+25A3,U+2316,U+25AA,U+2715,U+25B6,U+25BC,U+2605-2606}

@@ -253,3 +253,11 @@ html.scene-arriving .scene-curtain{transform:translate3d(0,0,0)}
  button:disabled,input:disabled,select:disabled,[aria-disabled="true"],.locked-card{cursor:var(--cursor-rest)}
  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),textarea,[contenteditable="true"],[contenteditable=""]{cursor:text}
 }
+
+/* Legend names become native buttons only after the atlas is ready. */
+.map-destinations li:has(.map-country-chip){padding:0;border:0;background:none}
+.map-country-chip{display:block;font:inherit;line-height:1.5;padding:7px 10px;min-height:36px;border:1px solid #c5d2be;background:#f0f3e8;color:var(--green);transition:background .16s ease,border-color .16s ease}
+.map-country-chip:hover,.map-country-chip[aria-pressed=true]{background:#dcebcf;border-color:#8d4e66}
+.map-country-chip:focus-visible{outline:3px solid #b26379;outline-offset:3px}
+@media(max-width:600px){.map-country-chip{min-height:44px;padding:9px 10px}}
+@media(prefers-reduced-motion:reduce){.map-country-chip{transition:none}}

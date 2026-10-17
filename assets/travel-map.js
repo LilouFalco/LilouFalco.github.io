@@ -36,6 +36,10 @@
   const original=svg.viewBox.baseVal;
   const full={x:original.x,y:original.y,w:original.width,h:original.height};
   let zoom=1,x=full.x,y=full.y,selected=null,gesture=null,moved=false;
+  let flight=0;
+  const reduced=matchMedia("(prefers-reduced-motion: reduce)");
+  const chips=new Map();
+  function stopFlight(){cancelAnimationFrame(flight);flight=0;}
   const pointers=new Map();
   const viewport=document.createElement('div');viewport.className='map-viewport';
   viewport.tabIndex=0;viewport.setAttribute('role','group');
@@ -47,7 +51,7 @@
   const out=document.createElement('output');out.textContent='×1';out.setAttribute('aria-label','Niveau de zoom');
   const minus=button('−','Réduire le zoom',()=>scale(zoom/1.5));
   const plus=button('+','Agrandir le zoom',()=>scale(zoom*1.5));
-  const reset=button('↺','Réinitialiser la carte',()=>{zoom=1;x=full.x;y=full.y;render();hide();});
+  const reset=button('↺','Réinitialiser la carte',()=>{stopFlight();zoom=1;x=full.x;y=full.y;render();hide();});
   controls.append(minus,out,plus,reset);viewport.after(controls);
   const card=document.createElement('div');card.className='map-country-card';card.hidden=true;
   const name=document.createElement('strong'),status=document.createElement('span');
@@ -67,20 +71,23 @@
    viewport.classList.toggle('is-zoomed',zoom>1);
   }
   function scale(next,cx=x+full.w/zoom/2,cy=y+full.h/zoom/2){
+   stopFlight();
    const prev=zoom;zoom=Math.max(1,Math.min(5,next));
    x=cx-(cx-x)*prev/zoom;y=cy-(cy-y)*prev/zoom;render();
   }
   function hide(){
    card.hidden=true;
-   if(selected)selected.classList.remove('map-country-active');
+   paths.forEach(path=>path.classList.remove('map-country-active'));
+   chips.forEach(chip=>chip.setAttribute('aria-pressed','false'));
    selected=null;
   }
   const explored=path=>visited.has(path.dataset.country)&&(path.getAttribute('fill')==='#93b484'||path.dataset.country==='GIB');
   function show(path){
    if(!path)return;
-   if(selected)selected.classList.remove('map-country-active');
-   selected=path;path.classList.add('map-country-active');
+   paths.forEach(p=>p.classList.toggle('map-country-active',p.dataset.country===path.dataset.country&&(explored(p)||p.dataset.country==='CHN')));
+   selected=path;
    const id=path.dataset.country;
+   chips.forEach((chip,code)=>chip.setAttribute('aria-pressed',String(code===id)));
    name.textContent=(details[id]?.[0]||'✦')+' '+(path.dataset.place||visited.get(id)||path.querySelector('title')?.textContent||id);
    status.textContent=id==='CHN'?'▣ Bientôt débloqué':explored(path)?'◆ Déjà exploré':'Sur la carte';
    if(details[id]?.[1]&&explored(path))status.textContent+=' · '+details[id][1];
@@ -88,6 +95,39 @@
   }
   const primary=new Map();
   paths.forEach(path=>{if(!explored(path)&&path.dataset.country!=='CHN')return;const box=path.getBBox(),area=box.width*box.height;const previous=primary.get(path.dataset.country);if(!previous||area>previous.area)primary.set(path.dataset.country,{path,area});});
+  function findCountry(id){
+   const target=primary.get(id)?.path;if(!target)return;
+   show(target);stopFlight();
+   const box=target.getBBox(),w=full.w/zoom,h=full.h/zoom;
+   const off=box.x<x+w*.08||box.x+box.width>x+w*.92||box.y<y+h*.16||box.y+box.height>y+h*.92;
+   const small=box.width/w<.12||box.height/h<.12;
+   if(!off&&!small)return;
+   const next=Math.max(1,Math.min(5,full.w*.48/Math.max(box.width,1),full.h*.48/Math.max(box.height,1)));
+   const tx=Math.max(full.x,Math.min(full.x+full.w-full.w/next,box.x+box.width/2-full.w/next/2));
+   const ty=Math.max(full.y,Math.min(full.y+full.h-full.h/next,box.y+box.height/2-full.h/next/2));
+   const start={x,y,w:full.w/zoom,h:full.h/zoom};
+   const finish={x:tx,y:ty,w:full.w/next,h:full.h/next};
+   const began=performance.now();
+   function frame(now){
+    const progress=reduced.matches?1:Math.min(1,(now-began)/460);
+    const t=1-Math.pow(1-progress,3),width=start.w+(finish.w-start.w)*t;
+    zoom=full.w/width;x=start.x+(finish.x-start.x)*t;y=start.y+(finish.y-start.y)*t;render();
+    if(progress<1)flight=requestAnimationFrame(frame);else flight=0;
+   }
+   if(reduced.matches)frame(began);else flight=requestAnimationFrame(frame);
+  }
+  document.querySelectorAll('[data-visited]').forEach(li=>{
+   const id=li.dataset.visited;if(!primary.has(id))return;
+   const chip=document.createElement('button');chip.type='button';chip.className='map-country-chip';
+   while(li.firstChild)chip.append(li.firstChild);
+   chip.setAttribute('aria-pressed','false');chip.setAttribute('aria-controls','travel-atlas');
+   chip.addEventListener('pointerenter',event=>{if(event.pointerType!=='touch')findCountry(id)});
+   chip.addEventListener('focus',()=>findCountry(id));
+   chip.addEventListener('click',()=>findCountry(id));
+   chip.addEventListener('keydown',event=>{if(event.key==='Escape'){stopFlight();hide()}});
+   li.append(chip);chips.set(id,chip);
+  });
+  svg.id='travel-atlas';
   paths.forEach(path=>{
    const id=path.dataset.country;
    if(explored(path)||id==='CHN'){
@@ -103,6 +143,7 @@
   viewport.addEventListener('focusout',e=>{if(!viewport.contains(e.relatedTarget))hide();});
   viewport.addEventListener('keydown',e=>{
    if(e.altKey||e.ctrlKey||e.metaKey)return;
+   stopFlight();
    const amount=full.w/zoom*.12;
    if(e.key==='+'||e.key==='='){e.preventDefault();scale(zoom*1.5);}
    else if(e.key==='-'){e.preventDefault();scale(zoom/1.5);}
@@ -127,6 +168,7 @@
   viewport.addEventListener('pointerdown',e=>{
    moved=false;
    if(e.button!==0)return;
+   stopFlight();
    pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
    try{viewport.setPointerCapture(e.pointerId);}catch{/* Pointer may already have ended. */}
    gesture={x,y,zoom,points:[...pointers.values()]};
@@ -160,7 +202,7 @@
  const figures=[...document.querySelectorAll('.map-layout figure')];
  if(figures.length){
   const help=document.createElement('p');help.id='map-controls-help';help.className='map-controls-help';
-  help.textContent='Survolez ou touchez un pays · molette, pincement ou + / − pour zoomer · glissez pour explorer';
+  help.textContent='Survolez ou touchez un pays ou son nom · molette, pincement ou + / − pour zoomer · glissez pour explorer';
   document.querySelector('.map-layout').after(help);
   figures.forEach((figure,index)=>setup(figure,index).catch(()=>{
    // The original static map remains usable even if enhancement fails.

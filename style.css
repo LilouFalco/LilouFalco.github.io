@@ -315,3 +315,33 @@ main:has(>#contact){display:flex;flex-direction:column}
 }
 
 @media(max-width:600px){.map-controls-help{white-space:normal;overflow:visible;font-size:8px}.world-map-window{margin-bottom:10px}#voyages.elsewhere{padding-top:39px}}
+
+/* Destination cards are little game buttons, including before a first selection. */
+.travel-invite{color:var(--ink);font:14px var(--pixel);letter-spacing:0}
+.travel-invite>span{font:10px var(--body);color:var(--muted);margin-left:5px}
+.travel-timeline .stamp-drawing{position:relative;transition:background .18s,border-color .18s,box-shadow .18s}
+.travel-open-badge{position:absolute;top:-5px;right:calc(50% - 39px);display:grid;place-items:center;width:19px;height:19px;background:var(--pink);border:1px solid #8d596a;box-shadow:2px 2px #e5c8cf;color:var(--ink);font:18px/1 var(--pixel);pointer-events:none}
+.travel-timeline .timeline-stop.selected .travel-open-badge{font-size:0}
+.travel-timeline .timeline-stop.selected .travel-open-badge:after{content:'−';font:18px/1 var(--pixel)}
+.travel-timeline .timeline-stop:not(:disabled):is(:hover,:focus-visible){transform:translateY(-4px)}
+.travel-timeline .timeline-stop:not(:disabled):is(:hover,:focus-visible) .stamp-drawing{background:#f7e2e8;border-color:#b26379;box-shadow:3px 5px #e5c8cf;animation:none}
+@keyframes destination-invite{0%,18%,38%,100%{transform:translateY(0)}28%{transform:translateY(-4px)}}
+@media(prefers-reduced-motion:no-preference){
+ .travel-inviting:not(.travel-chosen) .timeline-stop:not(:disabled) .stamp-drawing{animation:destination-invite 1.8s ease-in-out 2}
+ .travel-inviting .timeline-stop:nth-child(2) .stamp-drawing{animation-delay:100ms}
+ .travel-inviting .timeline-stop:nth-child(3) .stamp-drawing{animation-delay:200ms}
+ .travel-inviting .timeline-stop:nth-child(4) .stamp-drawing{animation-delay:300ms}
+ .travel-inviting .timeline-stop:nth-child(5) .stamp-drawing{animation-delay:400ms}
+ .travel-chosen .timeline-stop .stamp-drawing{animation:none}
+}
+@media(max-width:800px){.travel-open-badge{right:calc(50% - 34px)}}
+@media(max-width:600px){
+ .travel-invite{font-size:11px}
+ .travel-invite>span{font-size:8px;margin-left:2px}
+ .travel-open-badge{right:calc(50% - 26px);width:16px;height:16px;font-size:15px;top:-4px}
+}
+@media(prefers-reduced-motion:reduce){
+ .travel-timeline .stamp-drawing{animation:none;transition:none}
+ .travel-timeline .timeline-stop:not(:disabled):is(:hover,:focus-visible){transform:none}
+}
+@media(max-width:600px){.travel-window .window-bar>span:first-child{display:none}}

@@ -76,6 +76,7 @@ let tripAnimation;
 function chooseTrip(button,focus=false){
  const trip=trips[button?.dataset.trip];
  if(!trip||!travelPanel)return;
+ travelWindow?.classList.add("travel-chosen");
  const wasClosed=travelDetail?.hidden;
  detailAnimation?.cancel();
  if(travelDetail)travelDetail.hidden=false;
@@ -191,3 +192,14 @@ function tabFromHash(){
  if(tab)chooseProjectTab(tab,{updateHash:false});
 }
 if(projectTabs.length){tabFromHash();window.addEventListener('hashchange',tabFromHash);}
+
+// A short invitation only when the timeline enters view, never an endless loop.
+if(travelWindow && !matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window){
+ const invitationObserver=new IntersectionObserver(entries=>{
+  if(entries.some(entry=>entry.isIntersecting)){
+   travelWindow.classList.add('travel-inviting');
+   invitationObserver.disconnect();
+  }
+ },{threshold:.3});
+ invitationObserver.observe(document.querySelector('.travel-timeline'));
+}

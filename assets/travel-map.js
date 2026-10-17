@@ -33,10 +33,12 @@
   const response=await fetch(image.getAttribute('src'));
   if(!response.ok)throw Error('Atlas unavailable');
   const svg=safeSvg(await response.text(),'atlas-'+index+'-');
-  const original=svg.viewBox.baseVal;
   const bounds={x:0,y:0,w:1000,h:398};
   // Europe through Japan, roughly 60°N to the equator. Pan can still reach the whole world.
   const full={x:458,y:70,w:445,h:167};
+  // The default crop is not the minimum: zoom out far enough to fit both world axes.
+  const minZoom=Math.min(full.w/bounds.w,full.h/bounds.h);
+  const clampAxis=(value,size,start,extent)=>size>=extent?start+(extent-size)/2:Math.max(start,Math.min(start+extent-size,value));
   let zoom=1,x=full.x,y=full.y,selected=null,gesture=null,moved=false;
   let flight=0;
   const reduced=matchMedia("(prefers-reduced-motion: reduce)");
@@ -65,16 +67,16 @@
   }
   function render(){
    const w=full.w/zoom,h=full.h/zoom;
-   x=Math.max(bounds.x,Math.min(bounds.x+bounds.w-w,x));
-   y=Math.max(bounds.y,Math.min(bounds.y+bounds.h-h,y));
+   x=clampAxis(x,w,bounds.x,bounds.w);
+   y=clampAxis(y,h,bounds.y,bounds.h);
    svg.setAttribute('viewBox',[x,y,w,h].join(' '));
-   out.textContent='×'+zoom.toFixed(1).replace('.0','');
-   minus.disabled=zoom<=1;plus.disabled=zoom>=5;
-   viewport.classList.toggle('is-zoomed',zoom>1);
+   out.textContent=zoom<=minZoom+1e-8?'Monde':'×'+zoom.toFixed(1).replace('.0','');
+   minus.disabled=zoom<=minZoom+1e-8;plus.disabled=zoom>=5;
+   viewport.classList.toggle('is-zoomed',zoom>minZoom+1e-8);
   }
   function scale(next,cx=x+full.w/zoom/2,cy=y+full.h/zoom/2){
    stopFlight();
-   const prev=zoom;zoom=Math.max(1,Math.min(5,next));
+   const prev=zoom;zoom=Math.max(minZoom,Math.min(5,next));
    x=cx-(cx-x)*prev/zoom;y=cy-(cy-y)*prev/zoom;render();
   }
   function hide(){
@@ -159,7 +161,7 @@
   });
   // Wheel zoom is centered on the pointer, with small deltas for trackpads.
   viewport.addEventListener('wheel',e=>{
-   const next=Math.max(1,Math.min(5,zoom*Math.exp(-e.deltaY*.002)));
+   const next=Math.max(minZoom,Math.min(5,zoom*Math.exp(-e.deltaY*.002)));
    if(next===zoom)return;
    e.preventDefault();
    const point=new DOMPoint(e.clientX,e.clientY).matrixTransform(svg.getScreenCTM().inverse());

@@ -18,3 +18,4 @@ body:before{content:'';position:fixed;inset:0;z-index:50;pointer-events:none;bac
 @keyframes pixel-enter{0%{opacity:1;clip-path:inset(0 0 0 0)}99%{opacity:1;clip-path:inset(0 0 100% 0)}100%{opacity:0;clip-path:inset(0 0 100% 0);visibility:hidden}}
 @media(prefers-reduced-motion:reduce){body:before{display:none}}
 .floating-spark,.hero-location>span:first-child{font-family:var(--body)}
+.glyph-svg{width:1em;height:1em;display:block}.hero-location>span:first-child .glyph-svg{display:inline-block;vertical-align:-.12em}

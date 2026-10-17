@@ -8,6 +8,19 @@ for(const width of [1440,768,390,360]){
  const fra=svg.locator('[data-country=FRA]').last();await fra.focus();assert((await card.innerText()).includes('France'));assert((await card.innerText()).includes('Déjà exploré'));
  await svg.locator('[data-country=CHN]').last().focus();assert((await card.innerText()).includes('Bientôt débloqué'));
  await view.press('Escape');assert(!await card.isVisible());
+ await svg.locator('[data-country=THA]').last().focus();assert((await card.innerText()).includes('🇹🇭'));assert((await card.innerText()).includes('2016'));
+ await fra.focus();assert(!(await card.innerText()).includes('2021'));
+ const bounds=await view.boundingBox();
+ await p.mouse.move(bounds.x+bounds.width/2,bounds.y+bounds.height/2);await p.mouse.wheel(0,-150);
+ await p.waitForTimeout(60);assert.notEqual(await svg.getAttribute('viewBox'),original);
+ await map.getByRole('button',{name:'Réinitialiser la carte',exact:true}).click();
+ // Pinching must also begin from the default zoom.
+ await view.evaluate(e=>{
+  for(const [type,id,x] of [['pointerdown',11,80],['pointerdown',12,160],['pointermove',12,200],['pointerup',11,80],['pointerup',12,200]])
+   e.dispatchEvent(new PointerEvent(type,{pointerId:id,pointerType:'touch',button:0,clientX:x,clientY:100,bubbles:true}));
+ });
+ assert.equal(await map.locator('output').innerText(),'×1.5');
+ await map.getByRole('button',{name:'Réinitialiser la carte',exact:true}).click();
  await map.getByRole('button',{name:'Agrandir le zoom',exact:true}).click();assert.notEqual(await svg.getAttribute('viewBox'),original);
  for(let i=0;i<6;i++)await view.press('+');
  assert.equal(await map.locator('output').innerText(),'×5');assert(await map.getByRole('button',{name:'Agrandir le zoom',exact:true}).isDisabled());
@@ -31,6 +44,10 @@ for(const width of [1440,768,390,360]){
  await map.getByRole('button',{name:'Réinitialiser la carte',exact:true}).click();
  const detail=p.locator('.map-europe');await detail.locator('[data-country=GIB]').focus();assert((await detail.locator('.map-country-card').innerText()).includes('Gibraltar'));
  assert.equal(await svg.getAttribute('viewBox'),original);
+ await detail.getByRole('button',{name:'Trouver Sicile',exact:true}).click();
+ assert((await detail.locator('.map-country-card').innerText()).includes('Sicile'));assert.equal(await detail.locator('output').innerText(),'×3');
+ await detail.getByRole('button',{name:'Trouver Gibraltar',exact:true}).click();
+ assert((await detail.locator('.map-country-card').innerText()).includes('Gibraltar'));
  const ids=await p.locator('.map-interactive-svg [id]').evaluateAll(es=>es.map(e=>e.id));assert.equal(new Set(ids).size,ids.length);
  assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));assert.deepEqual(errors,[]);
  await p.screenshot({path:'checks/interactive-map-'+width+'.png',fullPage:true});await p.close();console.log(width+' popup/focus/zoom/bounds/pan/reset/detail/overflow pass');

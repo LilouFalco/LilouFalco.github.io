@@ -2,6 +2,7 @@
    No tiles, external libraries, remote requests, or tracking. */
 (() => {
  'use strict';
+ const details={FRA:['🇫🇷'],ESP:['🇪🇸'],PRT:['🇵🇹'],MAR:['🇲🇦','2021'],GIB:['◆'],HRV:['🇭🇷'],DEU:['🇩🇪'],ITA:['🇮🇹'],THA:['🇹🇭','2016'],JPN:['🇯🇵','mai 2023'],KOR:['🇰🇷','déc. 2023'],VNM:['🇻🇳','mars 2026'],CHN:['▣']};
  const ns='http://www.w3.org/2000/svg';
  const visited=new Map([...document.querySelectorAll('[data-visited]')].map(li=>[li.dataset.visited,li.textContent.replace('◆','').trim()]));
  const tags=new Set(['svg','title','desc','path','defs','g','pattern','rect','text']);
@@ -50,6 +51,7 @@
   controls.append(minus,out,plus,reset);viewport.after(controls);
   const card=document.createElement('div');card.className='map-country-card';card.hidden=true;
   const name=document.createElement('strong'),status=document.createElement('span');
+  card.setAttribute('role','status');card.setAttribute('aria-live','polite');
   card.append(name,status);figure.append(card);
   const paths=[...svg.querySelectorAll('[data-country]')];
   function button(label,aria,action){
@@ -79,8 +81,9 @@
    if(selected)selected.classList.remove('map-country-active');
    selected=path;path.classList.add('map-country-active');
    const id=path.dataset.country;
-   name.textContent=visited.get(id)||path.querySelector('title')?.textContent||id;
+   name.textContent=(details[id]?.[0]||'✦')+' '+(path.dataset.place||visited.get(id)||path.querySelector('title')?.textContent||id);
    status.textContent=id==='CHN'?'▣ Bientôt débloqué':explored(path)?'◆ Déjà exploré':'Sur la carte';
+   if(details[id]?.[1]&&explored(path))status.textContent+=' · '+details[id][1];
    card.classList.toggle('is-locked',id==='CHN');card.hidden=false;
   }
   const primary=new Map();
@@ -111,10 +114,19 @@
     if(e.key==='ArrowUp')y-=amount;if(e.key==='ArrowDown')y+=amount;render();
    }
   });
-  // Page scrolling is untouched at ×1. At larger scales, drag and pinch pan/zoom.
+  // Wheel zoom is centered on the pointer, with small deltas for trackpads.
+  viewport.addEventListener('wheel',e=>{
+   const next=Math.max(1,Math.min(5,zoom*Math.exp(-e.deltaY*.002)));
+   if(next===zoom)return;
+   e.preventDefault();
+   const point=new DOMPoint(e.clientX,e.clientY).matrixTransform(svg.getScreenCTM().inverse());
+   scale(next,point.x,point.y);hide();
+  },{passive:false});
+  // The map owns touch gestures; the surrounding page scroll remains normal.
+
   viewport.addEventListener('pointerdown',e=>{
    moved=false;
-   if(e.button!==0||zoom<=1)return;
+   if(e.button!==0)return;
    pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
    try{viewport.setPointerCapture(e.pointerId);}catch{/* Pointer may already have ended. */}
    gesture={x,y,zoom,points:[...pointers.values()]};
@@ -143,17 +155,41 @@
    else{gesture=null;viewport.classList.remove('is-dragging');}
   }
   viewport.addEventListener('pointerup',end);viewport.addEventListener('pointercancel',end);
+  // Discoverable shortcuts keep tiny destinations easy to reach.
+  if(index===1){
+   const shortcuts=document.createElement('div');shortcuts.className='map-place-shortcuts';
+   const gibraltar=paths.find(p=>p.dataset.country==='GIB');
+   const sicilyLabel=[...svg.querySelectorAll('text')].find(n=>n.textContent==='Sicile');
+   let sicily=null;
+   if(sicilyLabel){
+    const italy=paths.filter(p=>p.dataset.country==='ITA');
+    sicily=italy.reduce((best,p)=>{
+     const box=p.getBBox(),score=Math.hypot(box.x+box.width/2-270,box.y+box.height/2-210);
+     return !best||score<best.score?{path:p,score}:best;
+    },null)?.path;
+    if(sicily)sicily.dataset.place='Sicile · Italie';
+   }
+   for(const [label,path] of [['Gibraltar',gibraltar],['Sicile',sicily]]){
+    if(!path)continue;
+    shortcuts.append(button('⌖ '+label,'Trouver '+label,()=>{
+     const box=path.getBBox();zoom=3;
+     x=box.x+box.width/2-full.w/zoom/2;y=box.y+box.height/2-full.h/zoom/2;
+     render();show(path);
+    }));
+   }
+   controls.after(shortcuts);
+  }
   render();
  }
  const figures=[...document.querySelectorAll('.map-layout figure')];
  if(figures.length){
   const help=document.createElement('p');help.id='map-controls-help';help.className='map-controls-help';
-  help.textContent='Survolez ou touchez un pays · + / − pour zoomer · glissez pour explorer · clavier et flèches disponibles';
+  help.textContent='Survolez ou touchez un pays · molette, pincement ou + / − pour zoomer · glissez pour explorer';
   document.querySelector('.map-layout').after(help);
   figures.forEach((figure,index)=>setup(figure,index).catch(()=>{
    // The original static map remains usable even if enhancement fails.
    const image=figure.querySelector('img');if(image)image.hidden=false;
-   figure.querySelectorAll('.map-viewport,.map-controls,.map-country-card').forEach(el=>el.remove());
+   figure.querySelectorAll('.map-viewport,.map-controls,.map-country-card,.map-place-shortcuts').forEach(el=>el.remove());
   }));
  }
 })();

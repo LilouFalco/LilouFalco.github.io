@@ -17,4 +17,4 @@ class Handler(SimpleHTTPRequestHandler):
         self.send_header('X-Frame-Options','DENY')
         self.send_header('Content-Security-Policy',"default-src 'self'; img-src 'self'; style-src 'self'; font-src 'self'; script-src 'self'; media-src 'self'; frame-ancestors 'none'; base-uri 'none'")
         super().end_headers()
-ThreadingHTTPServer(('0.0.0.0', 18743),Handler).serve_forever()
+ThreadingHTTPServer(('0.0.0.0', int(os.environ.get('PORT', '18743'))),Handler).serve_forever()

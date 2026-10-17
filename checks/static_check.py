@@ -11,7 +11,7 @@ for p,t in H.items():
     chk(all(l in t for l in ['Mon univers','Créations','Parcours']),p+' nav labels')
     for a in re.findall(r'(?:src|href)="(assets/[^"]+)"',t): chk(os.path.exists(a),'asset '+a)
     chk('polarsteps' not in t.lower() and '+33' not in t and 'nfp_' not in t,p+' no secrets')
-    chk('hailand' not in t and 'haïlande' not in t.lower(),p+' no thailand')
+
 chk('JOUEUSE' not in H['index'] and 'hero-caption' not in H['index'] and 'character-name' not in H['index'],'home removals')
 for k in ['C1','B1','TOEIC','Créativité','Humanité','Empathie','Sensibilité humaine','Souriante','Pack Office','Conception de supports','Relation client']: chk(k in H['index'],'home '+k)
 pj=H['projets']
@@ -20,9 +20,13 @@ for k in ['id="arbitryum"','id="airvance"','id="ecole"','SUP’DE COM','ÉCOLE 3
 chk('avec Lilou' not in pj,'no third person')
 chk(pj.count('data-project=')==5,'5 modal projects')
 v=H['voyages']
-chk('about-strip' not in v and 'BIENTÔT DÉBLOQUÉ' in v and 'disabled' in v and '<svg' in v and '3 VOYAGES · PROCHAINE ESCALE CHINE' in v,'voyages china')
+chk('about-strip' not in v and 'BIENTÔT DÉBLOQUÉ' in v and 'disabled' in v and '<svg' in v and '4 VOYAGES · PROCHAINE ESCALE CHINE' in v,'voyages china')
 chk('avatar-hd.png' in H['contact'],'contact hd')
 js=open('app.js').read()
-chk('hailande' not in js and 'data-filter' not in js,'js clean')
+chk('data-filter' not in js,'js clean')
+chk('data-trip="thailande"' in v and 'Bangkok' in js,'Thailand unlocked')
+chk('floating-tag' not in H['index'] and 'CHOISISSEZ' not in H['index'],'home stickers removed')
+chk(H['index'].count('data-skill-description=') >= 19 and 'aria-live="polite"' in H['index'],'interactive skills')
+for k in ['Community management','Stratégie de contenu','Création visuelle','Communication interne','Montage vidéo','Motion design','Branding','Organisation d’événements','Gestion de projet','Bilingue en anglais','industrie française du jeu vidéo','Master 2']: chk(k in H['index'],'round3 '+k)
 chk(subprocess.run(['node','--check','app.js']).returncode==0,'js syntax')
 sys.exit(0 if ok else 1)

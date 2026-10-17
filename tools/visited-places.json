@@ -1,0 +1,17 @@
+{
+  "visited": [
+    {"id":"FRA","label":"France"},
+    {"id":"ESP","label":"Espagne"},
+    {"id":"PRT","label":"Portugal"},
+    {"id":"MAR","label":"Maroc"},
+    {"id":"GIB","label":"Gibraltar"},
+    {"id":"HRV","label":"Croatie"},
+    {"id":"DEU","label":"Allemagne"},
+    {"id":"ITA","label":"Italie · Sicile incluse"},
+    {"id":"THA","label":"Thaïlande"},
+    {"id":"JPN","label":"Japon"},
+    {"id":"KOR","label":"Corée du Sud"},
+    {"id":"VNM","label":"Vietnam"}
+  ],
+  "locked": [{"id":"CHN","label":"Chine · bientôt"}]
+}

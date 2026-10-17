@@ -25,7 +25,7 @@ def make_map(name, bounds, width, height, pixel):
     sx,sy = width/(east-west),height/(north-south)
     def project(lon,lat):
         return round((lon-west)*sx/pixel)*pixel,round((north-lat)*sy/pixel)*pixel
-    svg = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc"><title id="title">Mes destinations, {html.escape(name)}</title><desc id="desc">Les destinations visitées en vert, la Chine en rose hachuré. Gibraltar est signalé par un repère.</desc>']
+    svg = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="458 70 445 167" role="img" aria-labelledby="title desc"><title id="title">Mes destinations, {html.escape(name)}</title><desc id="desc">Les destinations visitées en vert, la Chine en rose hachuré. Gibraltar est signalé par un repère.</desc>']
     svg.append('<defs><pattern id="sea" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#b9d1c5" stroke-opacity=".45" stroke-width=".7"/></pattern><pattern id="soon" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="#f1d8df"/><path d="M0 0V7" stroke="#bd8195" stroke-width="2"/></pattern></defs>')
     svg.append(f'<rect width="{width}" height="{height}" fill="#e5eee6"/><rect width="{width}" height="{height}" fill="url(#sea)"/>')
     for f in data['features']:

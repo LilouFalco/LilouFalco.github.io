@@ -34,7 +34,9 @@
   if(!response.ok)throw Error('Atlas unavailable');
   const svg=safeSvg(await response.text(),'atlas-'+index+'-');
   const original=svg.viewBox.baseVal;
-  const full={x:original.x,y:original.y,w:original.width,h:original.height};
+  const bounds={x:0,y:0,w:1000,h:398};
+  // Europe through Japan, roughly 60°N to the equator. Pan can still reach the whole world.
+  const full={x:458,y:70,w:445,h:167};
   let zoom=1,x=full.x,y=full.y,selected=null,gesture=null,moved=false;
   let flight=0;
   const reduced=matchMedia("(prefers-reduced-motion: reduce)");
@@ -63,8 +65,8 @@
   }
   function render(){
    const w=full.w/zoom,h=full.h/zoom;
-   x=Math.max(full.x,Math.min(full.x+full.w-w,x));
-   y=Math.max(full.y,Math.min(full.y+full.h-h,y));
+   x=Math.max(bounds.x,Math.min(bounds.x+bounds.w-w,x));
+   y=Math.max(bounds.y,Math.min(bounds.y+bounds.h-h,y));
    svg.setAttribute('viewBox',[x,y,w,h].join(' '));
    out.textContent='×'+zoom.toFixed(1).replace('.0','');
    minus.disabled=zoom<=1;plus.disabled=zoom>=5;
@@ -103,8 +105,8 @@
    const small=box.width/w<.12||box.height/h<.12;
    if(!off&&!small)return;
    const next=Math.max(1,Math.min(5,full.w*.48/Math.max(box.width,1),full.h*.48/Math.max(box.height,1)));
-   const tx=Math.max(full.x,Math.min(full.x+full.w-full.w/next,box.x+box.width/2-full.w/next/2));
-   const ty=Math.max(full.y,Math.min(full.y+full.h-full.h/next,box.y+box.height/2-full.h/next/2));
+   const tx=Math.max(bounds.x,Math.min(bounds.x+bounds.w-full.w/next,box.x+box.width/2-full.w/next/2));
+   const ty=Math.max(bounds.y,Math.min(bounds.y+bounds.h-full.h/next,box.y+box.height/2-full.h/next/2));
    const start={x,y,w:full.w/zoom,h:full.h/zoom};
    const finish={x:tx,y:ty,w:full.w/next,h:full.h/next};
    const began=performance.now();

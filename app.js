@@ -59,11 +59,26 @@ const travelWindow=document.querySelector('.level-select');
 const travelPanel=document.querySelector('#travel-panel');
 const tripPrev=document.querySelector('#trip-prev');
 const tripNext=document.querySelector('#trip-next');
-let tripIndex=0;
+const travelDetail=document.querySelector(".travel-detail");
+let tripIndex=-1;
+let detailAnimation;
+function closeTrip(){
+ detailAnimation?.cancel();
+ tripButtons.forEach(b=>{b.setAttribute("aria-selected","false");b.classList.remove("selected");});
+ tripIndex=-1;
+ if(travelDetail){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches){travelDetail.hidden=true;return;}
+  detailAnimation=travelDetail.animate([{height:travelDetail.offsetHeight+"px",opacity:1},{height:"0px",opacity:0}],{duration:220,easing:"ease-in",fill:"both"});
+  detailAnimation.finished.then(()=>{travelDetail.hidden=true;detailAnimation.cancel();}).catch(()=>{});
+ }
+}
 let tripAnimation;
 function chooseTrip(button,focus=false){
  const trip=trips[button?.dataset.trip];
  if(!trip||!travelPanel)return;
+ const wasClosed=travelDetail?.hidden;
+ detailAnimation?.cancel();
+ if(travelDetail)travelDetail.hidden=false;
  tripIndex=tripButtons.indexOf(button);
  tripButtons.forEach(b=>{const selected=b===button;b.setAttribute('aria-selected',String(selected));b.tabIndex=selected?0:-1;b.classList.toggle('selected',selected);});
  travelPanel.setAttribute('aria-labelledby',button.id);
@@ -78,11 +93,13 @@ function chooseTrip(button,focus=false){
  if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
   tripAnimation=travelPanel.animate([{opacity:.6,transform:'translate3d(8px,0,0)'},{opacity:1,transform:'translate3d(0,0,0)'}],{duration:180,easing:'ease-out'});
  }
+ if(wasClosed&&!matchMedia("(prefers-reduced-motion: reduce)").matches){detailAnimation=travelDetail.animate([{height:"0px",opacity:0},{height:travelDetail.offsetHeight+"px",opacity:1}],{duration:280,easing:"ease-out"});}
  if(focus)button.focus({preventScroll:true});
 }
 function stepTrip(direction){const next=tripIndex+direction;if(tripButtons[next])chooseTrip(tripButtons[next]);}
 if(travelWindow){
- tripButtons.forEach(button=>button.addEventListener('click',()=>chooseTrip(button)));
+ tripButtons.forEach(button=>button.addEventListener('click',()=>{if(tripIndex===tripButtons.indexOf(button))closeTrip();else chooseTrip(button);}));
+ document.querySelector('.travel-close')?.addEventListener('click',()=>{const previous=tripButtons[tripIndex];closeTrip();previous?.focus({preventScroll:true});});
  tripPrev.addEventListener('click',()=>stepTrip(-1));
  tripNext.addEventListener('click',()=>stepTrip(1));
  travelWindow.addEventListener('keydown',event=>{
@@ -107,7 +124,7 @@ if(travelWindow){
   if(Math.abs(dx)>=45&&Math.abs(dx)>Math.abs(dy)*1.5&&performance.now()-start.time<1000)stepTrip(dx<0?1:-1);
  });
  travelPanel.addEventListener('pointercancel',()=>{swipeStart=null;});
- chooseTrip(tripButtons[0]);
+ // Start with the timeline only; no destination is selected.
 }
 
 // A shared detail card stays inside the inventory on every screen size.

@@ -178,38 +178,12 @@ main:has(>#contact){display:flex;flex-direction:column}
 @media(max-width:900px){.map-layout{grid-template-columns:minmax(0,1fr)}.map-world{padding:12px 8px}.map-world figcaption{font-size:9px;gap:5px}.map-passport{padding:19px}}
 @media(max-width:600px){.map-intro h1{font-size:42px;max-width:300px}.world-map-window{margin-bottom:48px}.map-layout{grid-template-columns:1fr}.map-world{padding:12px 6px 16px}.map-passport{padding:20px 16px}.map-destinations{gap:6px}.map-destinations li{font-size:10px;padding:5px 7px}.map-passport-label{font-size:10px}.map-window-stars{font-size:11px}}
 
-/* A single pink pixel shutter, composited with transform/opacity only.
-   Root snapshots stay still; the opaque shutter covers their midpoint swap. */
-html{background:var(--paper)}
-.scene-curtain{position:fixed;top:0;left:-32px;width:calc(100% + 64px);height:100dvh;background:var(--pink);z-index:-1;pointer-events:none;view-transition-name:scene-curtain;clip-path:polygon(16px 0,calc(100% - 16px) 0,calc(100% - 16px) 12.5%,100% 12.5%,100% 25%,calc(100% - 24px) 25%,calc(100% - 24px) 37.5%,calc(100% - 8px) 37.5%,calc(100% - 8px) 50%,100% 50%,100% 62.5%,calc(100% - 16px) 62.5%,calc(100% - 16px) 75%,calc(100% - 24px) 75%,calc(100% - 24px) 87.5%,100% 87.5%,100% 100%,16px 100%,16px 87.5%,0 87.5%,0 75%,24px 75%,24px 62.5%,8px 62.5%,8px 50%,0 50%,0 37.5%,16px 37.5%,16px 25%,24px 25%,24px 12.5%,16px 12.5%)}
-@view-transition{navigation:auto}
-::view-transition{pointer-events:none}
-::view-transition-group(root),::view-transition-group(scene-curtain){animation:none}
-::view-transition-image-pair(root),::view-transition-image-pair(scene-curtain){isolation:isolate}
-::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation-duration:560ms;animation-fill-mode:both}
-::view-transition-old(root){animation-name:scene-hold-old}
-::view-transition-new(root){animation-name:scene-hold-new}
-::view-transition-group(scene-curtain){z-index:2}
-::view-transition-old(scene-curtain){display:none}
-::view-transition-new(scene-curtain){animation:scene-pixel-shutter 560ms cubic-bezier(.65,0,.35,1) both;mix-blend-mode:normal}
-@keyframes scene-hold-old{0%,49.99%{opacity:1}50%,100%{opacity:0}}
-@keyframes scene-hold-new{0%,49.99%{opacity:0}50%,100%{opacity:1}}
-@keyframes scene-pixel-shutter{0%{transform:translate3d(-110%,0,0)}45%,55%{transform:translate3d(0,0,0)}100%{transform:translate3d(110%,0,0)}}
-/* Only the fallback promotes the real shutter over the page. */
-html.scene-arriving .scene-curtain,html.scene-leaving .scene-curtain{z-index:9999;view-transition-name:none}
-html.scene-arriving .scene-curtain{transform:translate3d(0,0,0)}
-@media(prefers-reduced-motion:reduce){
- ::view-transition-group(root){animation-duration:180ms!important}
- ::view-transition-old(root){animation:scene-fade-out 180ms linear both!important}
- ::view-transition-new(root){animation:scene-fade-in 180ms linear both!important}
- ::view-transition-group(scene-curtain){display:none}
- html.scene-arriving .scene-curtain,html.scene-leaving .scene-curtain{display:none}
- html.scene-arriving.scene-reduced body{opacity:0}
-}
-@keyframes scene-fade-out{from{opacity:1}to{opacity:0}}
-@keyframes scene-fade-in{from{opacity:0}to{opacity:1}}
-
-
+/* A single transparent wave over the destination, never a full-screen cover. */
+@view-transition{navigation:none}
+.scene-curtain{display:none}
+.scene-wave{position:fixed;inset:0;z-index:9999;display:grid;grid-template-columns:repeat(16,1fr);grid-template-rows:repeat(10,1fr);pointer-events:none}
+.scene-wave i{background:var(--pink);opacity:0}
+@media(prefers-reduced-motion:reduce){.scene-wave{display:none}}
 
 /* Playable atlas. Zoom/pan affect only SVG geometry inside its own viewport. */
 .map-layout figure{position:relative}
@@ -261,3 +235,7 @@ html.scene-arriving .scene-curtain{transform:translate3d(0,0,0)}
 .map-country-chip:focus-visible{outline:3px solid #b26379;outline-offset:3px}
 @media(max-width:600px){.map-country-chip{min-height:44px;padding:9px 10px}}
 @media(prefers-reduced-motion:reduce){.map-country-chip{transition:none}}
+
+.travel-detail{position:relative;overflow:hidden;grid-column:1 / -1}
+.travel-detail[hidden]{display:none}
+.travel-close{position:absolute;right:12px;top:10px;z-index:2;width:38px;height:38px;background:var(--paper);border:1px solid var(--line);font-size:24px;color:var(--ink)}

@@ -6,7 +6,7 @@ os.chdir('/home/portfolio')
 class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
         path = unquote(urlsplit(self.path).path)
-        allowed = path in ('/','/index.html','/style.css','/fonts.css','/app.js') or path.startswith('/assets/')
+        allowed = path in ('/','/index.html','/projets.html','/parcours.html','/voyages.html','/contact.html','/style.css','/fonts.css','/app.js') or path.startswith('/assets/')
         if not allowed or any(p.startswith('.') for p in PurePosixPath(path).parts if p not in ('/','')):
             self.send_error(404)
             return

@@ -7,12 +7,13 @@ const projectData = {
  angela: {title:"Angela, 86 ans, et tant à raconter", client:"ARBITRYUM · INTERVIEW", description:"Donner la parole à Angela, 86 ans. Un format de rencontre qui met la personne et son histoire au premier plan, loin des idées toutes faites sur l’âge.",role:"Tournage de l’interview et montage du reel.",tags:["Tournage","Interview","Montage vidéo"],video:"angela"}
 };
 const dialog=document.querySelector('#project-dialog');
+const toastEl=document.querySelector('.toast');
 let lastProject;
 let carouselIndex=0;
 let activeProject;
 const discovered=new Set();
 function openProject(key,button){
- const project=projectData[key];if(!project)return;
+ const project=projectData[key];if(!project||!dialog)return;
  lastProject=button;activeProject=project;carouselIndex=0;
  const visual=project.video
  ? '<video controls playsinline preload="metadata" poster="assets/'+project.video+'.jpg" aria-label="'+project.title+'"><source src="assets/'+project.video+'.mp4" type="video/mp4">Votre navigateur ne prend pas en charge cette vidéo.</video>'
@@ -31,14 +32,16 @@ function slide(direction){
  document.querySelector('#carousel-count').textContent=(carouselIndex+1)+' / '+activeProject.images.length;
 }
 document.querySelectorAll('[data-project]').forEach(button=>button.addEventListener('click',()=>openProject(button.dataset.project,button)));
-document.querySelector('#close-dialog').addEventListener('click',()=>dialog.close());
+if(dialog){
+document.querySelector('#close-dialog')?.addEventListener('click',()=>dialog.close());
 dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();}});
-dialog.addEventListener('close',()=>{dialog.querySelector('video')?.pause();document.body.style.overflow='';lastProject?.focus({preventScroll:true});if(discovered.size===5&&!sessionStorage.getItem('explorer')){sessionStorage.setItem('explorer','1');const toast=document.querySelector('.toast');toast.textContent='✦ Succès débloqué · Curiosité niveau maximum !';toast.classList.add('visible');setTimeout(()=>toast.classList.remove('visible'),4500);}});
+dialog.addEventListener('close',()=>{dialog.querySelector('video')?.pause();document.body.style.overflow='';lastProject?.focus({preventScroll:true});if(discovered.size===5&&!sessionStorage.getItem('explorer')){sessionStorage.setItem('explorer','1');const toast=toastEl;if(!toast)return;toast.textContent='✦ Succès débloqué · Curiosité niveau maximum !';toast.classList.add('visible');setTimeout(()=>toast.classList.remove('visible'),4500);}});
 dialog.addEventListener('keydown',event=>{if(activeProject?.images?.length>1){if(event.key==='ArrowRight'){event.preventDefault();slide(1);}if(event.key==='ArrowLeft'){event.preventDefault();slide(-1);}}});
+}
 document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{
  document.querySelectorAll('[data-filter]').forEach(b=>{const selected=b===button;b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',String(selected));});
  document.querySelectorAll('[data-category]').forEach(card=>{card.hidden=button.dataset.filter!=='all'&&card.dataset.category!==button.dataset.filter;});
- document.querySelector('#filter-status').textContent=document.querySelectorAll('[data-category]:not([hidden])').length+' créations affichées';
+ const status=document.querySelector('#filter-status');if(status)status.textContent=document.querySelectorAll('[data-category]:not([hidden])').length+' créations affichées';
 }));
 const trips={
  japon:{number:"01",date:"MAI 2023",title:"Japon, entre pixels<br>et poésie.",text:"À Tokyo et Yokohama, les univers se croisent. L’imaginaire du musée Ghibli, l’effervescence de Shibuya et d’Akihabara, le calme des temples et des jardins. Une escapade entre culture pop et découvertes.",tags:["Tokyo","Yokohama","Culture pop"],emote:12},
@@ -49,12 +52,9 @@ const trips={
 const tripButtons=[...document.querySelectorAll('[data-trip]')];
 function chooseTrip(button,focus=false){
  tripButtons.forEach(b=>{const selected=b===button;b.setAttribute('aria-selected',String(selected));b.tabIndex=selected?0:-1;b.classList.toggle('selected',selected);});
- const trip=trips[button.dataset.trip];const panel=document.querySelector('#travel-panel');
+ const trip=trips[button.dataset.trip];const panel=document.querySelector('#travel-panel');if(!trip||!panel)return;
  panel.setAttribute('aria-labelledby',button.id);
  panel.innerHTML='<span class="travel-eyebrow">CARNET N° '+trip.number+' · '+trip.date+'</span><h3>'+trip.title+'</h3><p>'+trip.text+'</p><div class="travel-tags">'+trip.tags.map(t=>'<span>'+t+'</span>').join('')+'</div><span class="travel-coordinate">SOUVENIRS COLLECTÉS, CURIOSITÉ RECHARGÉE.</span><img src="assets/emote-'+trip.emote+'.png" width="120" height="120" alt="" class="travel-emote">';
  if(focus)button.focus();
 }
 tripButtons.forEach((button,index)=>{button.tabIndex=index===0?0:-1;button.addEventListener('click',()=>chooseTrip(button));button.addEventListener('keydown',e=>{let next;if(e.key==='ArrowRight'||e.key==='ArrowDown')next=(index+1)%tripButtons.length;if(e.key==='ArrowLeft'||e.key==='ArrowUp')next=(index-1+tripButtons.length)%tripButtons.length;if(e.key==='Home')next=0;if(e.key==='End')next=tripButtons.length-1;if(next!==undefined){e.preventDefault();chooseTrip(tripButtons[next],true);}});});
-const sections=[...document.querySelectorAll('main>section[id]')];const navLinks=[...document.querySelectorAll('.header nav a')];
-function updateNav(){let active=sections[0].id;for(const section of sections)if(section.getBoundingClientRect().top<window.innerHeight*.4)active=section.id;navLinks.forEach(link=>{const current=link.hash==='#'+active;link.classList.toggle('active',current);if(current)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current');});}
-let ticking=false;window.addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(()=>{updateNav();ticking=false;});ticking=true;}},{passive:true});updateNav();

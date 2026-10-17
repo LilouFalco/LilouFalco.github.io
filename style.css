@@ -91,7 +91,7 @@ main:has(>#contact){display:flex;flex-direction:column}
 .skill-button:focus-visible{outline:3px solid #b26379;outline-offset:3px;box-shadow:0 0 0 6px #f6e4e8}
 @media(prefers-reduced-motion:reduce){.skill-button{transition:none}.skill-button:hover{transform:none;box-shadow:4px 4px 0 #8da47c;outline:2px dashed #617854;outline-offset:2px}.skill-button:active,.skill-button.is-pressed{transform:none;box-shadow:inset 0 0 0 2px #435f49;background:#c4d6b6}.skill-button.pop{animation:none;box-shadow:inset 0 0 0 2px #435f49}}
 /* hero balance */
-.hero{grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);align-items:start;min-height:0;padding-bottom:100px}
+.hero{grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);align-items:start;min-height:0;padding-bottom:58px}
 .hero-art{max-width:none;margin-top:0}
 .hero-intro{max-width:520px}
 .character-stage{height:300px}

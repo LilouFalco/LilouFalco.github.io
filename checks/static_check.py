@@ -13,10 +13,11 @@ for p,t in H.items():
     chk('polarsteps' not in t.lower() and '+33' not in t and 'nfp_' not in t,p+' no secrets')
     chk('hailand' not in t and 'haïlande' not in t.lower(),p+' no thailand')
 chk('JOUEUSE' not in H['index'] and 'hero-caption' not in H['index'] and 'character-name' not in H['index'],'home removals')
-for k in ['C1','B1','TOEIC','Créativité','Empathie','Sensibilité humaine','Souriante','Pack Office','Conception de supports','Relation client']: chk(k in H['index'],'home '+k)
+for k in ['C1','B1','TOEIC','Créativité','Humanité','Empathie','Sensibilité humaine','Souriante','Pack Office','Conception de supports','Relation client']: chk(k in H['index'],'home '+k)
 pj=H['projets']
 chk('data-filter' not in pj and 'class="dialogue"' not in pj,'projets no filter/dialogue')
 for k in ['id="arbitryum"','id="airvance"','id="ecole"','SUP’DE COM','ÉCOLE 3A','DUT CARRIÈRES','Hackathon 2021']: chk(k in pj,'projets '+k)
+chk('avec Lilou' not in pj,'no third person')
 chk(pj.count('data-project=')==5,'5 modal projects')
 v=H['voyages']
 chk('about-strip' not in v and 'BIENTÔT DÉBLOQUÉ' in v and 'disabled' in v and '<svg' in v and '3 VOYAGES · PROCHAINE ESCALE CHINE' in v,'voyages china')

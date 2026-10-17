@@ -17,3 +17,4 @@ footer{margin-top:auto}
 body:before{content:'';position:fixed;inset:0;z-index:50;pointer-events:none;background:linear-gradient(#d8e9d6,#d8e9d6) 0 0/100% 100% no-repeat,repeating-conic-gradient(#edb6c4 0 25%,#f8f6ef 0 50%) 0 0/48px 48px;animation:pixel-enter .5s steps(7) forwards}
 @keyframes pixel-enter{0%{opacity:1;clip-path:inset(0 0 0 0)}99%{opacity:1;clip-path:inset(0 0 100% 0)}100%{opacity:0;clip-path:inset(0 0 100% 0);visibility:hidden}}
 @media(prefers-reduced-motion:reduce){body:before{display:none}}
+.floating-spark,.hero-location>span:first-child{font-family:var(--body)}

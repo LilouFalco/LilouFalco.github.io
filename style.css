@@ -320,9 +320,9 @@ main:has(>#contact){display:flex;flex-direction:column}
 .travel-invite{color:var(--ink);font:14px var(--pixel);letter-spacing:0}
 .travel-invite>span{font:10px var(--body);color:var(--muted);margin-left:5px}
 .travel-timeline .stamp-drawing{position:relative;transition:background .18s,border-color .18s,box-shadow .18s}
-.travel-open-badge{position:absolute;top:-5px;right:calc(50% - 39px);display:grid;place-items:center;width:19px;height:19px;background:var(--pink);border:1px solid #8d596a;box-shadow:2px 2px #e5c8cf;color:var(--ink);font:18px/1 var(--pixel);pointer-events:none}
-.travel-timeline .timeline-stop.selected .travel-open-badge{font-size:0}
-.travel-timeline .timeline-stop.selected .travel-open-badge:after{content:'−';font:18px/1 var(--pixel)}
+.travel-open-badge{position:absolute;top:-5px;right:calc(50% - 39px);display:grid;place-items:center;width:20px;height:20px;padding:0;background:#d58b9f;border:1px solid #b77288;box-shadow:1px 1px 0 #bd7c91;pointer-events:none}
+.travel-open-badge svg{display:block;width:10px;height:10px;fill:#fff9ee}
+.travel-timeline .timeline-stop.selected .badge-plus-stem{display:none}
 .travel-timeline .timeline-stop:not(:disabled):is(:hover,:focus-visible){transform:translateY(-4px)}
 .travel-timeline .timeline-stop:not(:disabled):is(:hover,:focus-visible) .stamp-drawing{background:#f7e2e8;border-color:#b26379;box-shadow:3px 5px #e5c8cf;animation:none}
 @keyframes destination-invite{0%,18%,38%,100%{transform:translateY(0)}28%{transform:translateY(-4px)}}
@@ -338,8 +338,9 @@ main:has(>#contact){display:flex;flex-direction:column}
 @media(max-width:600px){
  .travel-invite{font-size:11px}
  .travel-invite>span{font-size:8px;margin-left:2px}
- .travel-open-badge{right:calc(50% - 26px);width:16px;height:16px;font-size:15px;top:-4px}
+ .travel-open-badge{right:calc(50% - 26px);width:16px;height:16px;top:-4px}
 }
+@media(max-width:600px){.travel-open-badge svg{width:8px;height:8px}}
 @media(prefers-reduced-motion:reduce){
  .travel-timeline .stamp-drawing{animation:none;transition:none}
  .travel-timeline .timeline-stop:not(:disabled):is(:hover,:focus-visible){transform:none}

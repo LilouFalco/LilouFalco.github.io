@@ -3,7 +3,7 @@ const projectData = {
  ageisme: {title:"L’âgisme en chiffres", client:"ARBITRYUM · SOCIAL MEDIA · MAI 2023", description:"Mettre des chiffres sur une discrimination encore trop banalisée. Un carrousel pensé pour sensibiliser à l’âgisme et inviter à regarder autrement l’avancée en âge.", role:"Création des visuels et adaptation du message au format carrousel pour Instagram.",tags:["Création de contenus","Carrousel","Sensibilisation"],images:["ageisme-1.webp","ageisme-2.webp","ageisme-3.webp"]},
  formations: {title:"Donner vie à une offre", client:"ARBITRYUM · MOTION DESIGN", description:"Présenter les formations d’Arbitryum dans un format court et animé. Une création qui met en mouvement les informations pour faire découvrir l’offre sur les réseaux sociaux.",role:"Création et montage du reel de présentation des formations.",tags:["Motion design","Montage","Réseaux sociaux"],video:"formations"},
  chantal: {title:"Vieillir, c’est quoi pour vous ?", client:"ARBITRYUM · INTERVIEW DE CHANTAL", description:"Une rencontre avec Chantal, aide-soignante, pour parler de l’âge à partir de son expérience. La vidéo laisse une place à la parole et au regard de celles qui accompagnent les personnes âgées.",role:"Tournage de l’interview et montage du reel.",tags:["Tournage","Interview","Montage vidéo"],video:"chantal"},
- pride: {title:"La fierté n’a pas d’âge", client:"ARBITRYUM · MOIS DES FIERTÉS · JUIN 2023", description:"Un visuel pour le mois des fiertés, qui relie la question de l’âge à celle de l’inclusion. Parce que chaque parcours et chaque identité méritent d’être représentés.",role:"Création du visuel pour les réseaux sociaux d’Arbitryum.",tags:["Création visuelle","Social media","Inclusion"],images:["pride.webp"]},
+ pride: {title:"La fierté n’a pas d’âge", client:"ARBITRYUM · MOIS DES FIERTÉS · JUIN 2023", description:"Une illustration aux crayons publiée à la fin du mois des fiertés pour défendre l’inclusion et le respect des personnes LGBTQIA+ en EHPAD.",role:"Création du visuel pour les réseaux sociaux d’Arbitryum.",tags:["Création visuelle","Social media","Inclusion"],images:["pride.webp"],instagram:"https://www.instagram.com/p/CuCZU8fIpbE/"},
  angela: {title:"Angela, 86 ans, et tant à raconter", client:"ARBITRYUM · INTERVIEW", description:"Donner la parole à Angela, 86 ans. Un format de rencontre qui met la personne et son histoire au premier plan, loin des idées toutes faites sur l’âge.",role:"Tournage de l’interview et montage du reel.",tags:["Tournage","Interview","Montage vidéo"],video:"angela"}
 };
 const dialog=document.querySelector('#project-dialog');
@@ -19,6 +19,15 @@ function openProject(key,button){
  ? '<video controls playsinline preload="metadata" poster="assets/'+project.video+'.jpg" aria-label="'+project.title+'"><source src="assets/'+project.video+'.mp4" type="video/mp4">Votre navigateur ne prend pas en charge cette vidéo.</video>'
  : '<img id="carousel-image" src="assets/'+project.images[0]+'" alt="'+project.title+' · visuel 1">'+(project.images.length>1?'<div class="carousel-controls"><button id="prev-slide" aria-label="Visuel précédent">Précédent</button><span id="carousel-count" aria-live="polite">1 / '+project.images.length+'</span><button id="next-slide" aria-label="Visuel suivant">Suivant</button></div>':'');
  document.querySelector('#modal-content').innerHTML='<div class="modal-layout"><div class="modal-visual">'+visual+'</div><div class="modal-text"><span class="project-client">'+project.client+'</span><h2 id="modal-title">'+project.title+'</h2><p>'+project.description+'</p><h3>MON RÔLE</h3><p>'+project.role+'</p><div class="tags">'+project.tags.map(tag=>'<span>'+tag+'</span>').join('')+'</div><p class="modal-credit">Création réalisée pour Arbitryum. Les interviews ont été filmées et montées par Lilou Falco.</p></div></div>';
+ if(project.instagram){
+  const link=document.createElement('a');
+  link.className='button button-dark project-instagram';
+  link.href=project.instagram;
+  link.target='_blank';
+  link.rel='noopener noreferrer';
+  link.textContent='Voir sur Instagram';
+  document.querySelector('.modal-text').append(link);
+ }
  dialog.showModal();document.body.style.overflow='hidden';
  document.querySelector('#prev-slide')?.addEventListener('click',()=>slide(-1));
  document.querySelector('#next-slide')?.addEventListener('click',()=>slide(1));

@@ -117,3 +117,5 @@ main:has(>#contact){display:flex;flex-direction:column}
 .sub-title:after{content:'';flex:1;border-top:1px dotted #c9cfbd}
 @media(max-width:600px){.project-tabs{display:flex;flex-wrap:nowrap;overflow-x:auto}.project-tab{white-space:nowrap;min-height:44px;padding:10px 12px;font-size:11px}}
 @media(prefers-reduced-motion:reduce){.project-tab:hover{transform:none}}
+
+.project-instagram{margin-top:18px;min-height:44px;display:inline-flex;align-items:center}

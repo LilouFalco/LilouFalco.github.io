@@ -53,3 +53,6 @@ main:has(>#contact){display:flex;flex-direction:column}
 .contact-routes a{font-size:11px;padding:8px 13px;border:1px dashed #9a7a88;color:#7d5f6b;text-decoration:none;background:#f1e6e8}
 .contact-routes a:hover,.contact-routes a:focus-visible{background:#f8eeec;box-shadow:2px 2px #ccb0bb}
 @media(max-width:600px){.contact-avatar>img{width:230px}.contact{padding:36px 0 30px}.contact-avatar{width:100%}}
+/* Keep the dance sticker beside the portrait, clear of the skills inventory. */
+.tag-dance{top:270px;bottom:auto}
+@media(max-width:600px){.tag-dance{top:235px;bottom:auto}}

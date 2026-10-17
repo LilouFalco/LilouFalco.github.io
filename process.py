@@ -23,7 +23,7 @@ for r in range(3):
 for n,name in [(5546,'ageisme-1'),(5547,'ageisme-2'),(5548,'ageisme-3'),(5549,'pride')]:
  im=Image.open(next(base.glob(f'IMG_{n}*'))).convert('RGB');im=im.crop((0,501,1179,1974 if n==5549 else 1680));im.thumbnail((1000,1250));im.save(dest/f'{name}.webp',quality=90)
 # Trim screen-recording transitions; preserve the original captions and logos.
-jobs=[('13-42-03','formations',7.0,30.2,'crop=390:756:28:80'),('13-44-27','chantal',3.8,84.0,'crop=390:770:28:78'),('13-46-41','angela',2.5,46.7,'crop=388:768:28:74')]
+jobs=[('13-42-03','formations',7.0,30.2,'crop=400:760:22:78'),('13-44-27','chantal',3.8,84.0,'crop=402:784:24:70'),('13-46-41','angela',2.5,46.7,'crop=398:778:22:68')]
 def encode(job):
  key,name,start,duration,crop=job;src=next(base.glob('*'+key+'*'))
  subprocess.run(['ffmpeg','-y','-ss',str(start),'-i',str(src),'-t',str(duration),'-vf',crop,'-c:v','libx264','-preset','fast','-crf','23','-pix_fmt','yuv420p','-c:a','aac','-b:a','96k','-movflags','+faststart',str(dest/f'{name}.mp4')],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,check=True)

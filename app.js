@@ -39,6 +39,7 @@ dialog.addEventListener('close',()=>{dialog.querySelector('video')?.pause();docu
 dialog.addEventListener('keydown',event=>{if(activeProject?.images?.length>1){if(event.key==='ArrowRight'){event.preventDefault();slide(1);}if(event.key==='ArrowLeft'){event.preventDefault();slide(-1);}}});
 }
 const trips={
+ thailande:{number:"04",date:"BANGKOK",title:"Thaïlande,<br>un très beau souvenir.",text:"J’ai séjourné à Bangkok et pris le temps de découvrir la ville. J’ai beaucoup aimé la Thaïlande, un pays dont je garde un très beau souvenir.",tags:["Bangkok","Découvertes"],emote:7},
  japon:{number:"01",date:"MAI 2023",title:"Japon, entre pixels<br>et poésie.",text:"À Tokyo et Yokohama, les univers se croisent. L’imaginaire du musée Ghibli, l’effervescence de Shibuya et d’Akihabara, le calme des temples et des jardins. Une escapade entre culture pop et découvertes.",tags:["Tokyo","Yokohama","Culture pop"],emote:12},
  coree:{number:"02",date:"DÉCEMBRE 2023",title:"Corée du Sud,<br>mille contrastes.",text:"De Séoul à Busan, un voyage entre palais, marchés et quartiers créatifs. Hongdae, les ruelles colorées de Gamcheon et le temple Haedong Yonggungsa, au bord de la mer. Des découvertes à chaque détour.",tags:["Séoul","Busan","Art & traditions"],emote:7},
  vietnam:{number:"03",date:"MARS 2026",title:"Vietnam,<br>prendre le temps.",text:"Des rues de Hanoï aux rizières de Pú Luông, puis du kayak dans la baie de Lan Ha aux barques de Trang An. À Hoi An, les lanternes et les ateliers d’artisanat prolongent le voyage. Une parenthèse entre nature et savoir-faire.",tags:["Hanoï","Lan Ha","Hoi An"],emote:3},
@@ -52,3 +53,33 @@ function chooseTrip(button,focus=false){
  if(focus)button.focus();
 }
 tripButtons.forEach((button,index)=>{button.tabIndex=index===0?0:-1;button.addEventListener('click',()=>chooseTrip(button));button.addEventListener('keydown',e=>{let next;if(e.key==='ArrowRight'||e.key==='ArrowDown')next=(index+1)%tripButtons.length;if(e.key==='ArrowLeft'||e.key==='ArrowUp')next=(index-1+tripButtons.length)%tripButtons.length;if(e.key==='Home')next=0;if(e.key==='End')next=tripButtons.length-1;if(next!==undefined){e.preventDefault();chooseTrip(tripButtons[next],true);}});});
+
+
+// A shared detail card stays inside the inventory on every screen size.
+const skillButtons=[...document.querySelectorAll('.skill-button')];
+const skillDetail=document.querySelector('#skill-detail');
+let selectedSkill=null;
+function showSkill(button){
+ if(!skillDetail)return;
+ selectedSkill=button;
+ skillButtons.forEach(item=>item.setAttribute('aria-expanded',String(item===button)));
+ skillDetail.querySelector('strong').textContent=button.textContent;
+ skillDetail.querySelector('p').textContent=button.dataset.skillDescription;
+}
+function closeSkill(){
+ if(!skillDetail)return;
+ selectedSkill=null;
+ skillButtons.forEach(item=>item.setAttribute('aria-expanded','false'));
+ skillDetail.querySelector('strong').textContent='Un peu plus en détail';
+ skillDetail.querySelector('p').textContent='Choisissez une compétence pour découvrir comment je la mets en pratique.';
+}
+skillButtons.forEach(button=>{
+ button.addEventListener('pointerenter',event=>{if(event.pointerType==='mouse')showSkill(button);});
+ button.addEventListener('focus',()=>{if(button.matches(':focus-visible'))showSkill(button);});
+ button.addEventListener('click',()=>{
+  if(selectedSkill===button&&window.matchMedia('(hover: none)').matches)closeSkill();
+  else showSkill(button);
+ });
+});
+document.addEventListener('keydown',event=>{if(event.key==='Escape')closeSkill();});
+document.addEventListener('click',event=>{if(!event.target.closest('.inventory'))closeSkill();});

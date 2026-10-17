@@ -56,3 +56,17 @@ main:has(>#contact){display:flex;flex-direction:column}
 /* Keep the dance sticker beside the portrait, clear of the skills inventory. */
 .tag-dance{top:270px;bottom:auto}
 @media(max-width:600px){.tag-dance{top:235px;bottom:auto}}
+
+
+/* Interactive inventory, with an inline card so descriptions never clip. */
+.hero-intro{max-width:440px}
+.skill-button{font-family:inherit;text-align:left;cursor:pointer;min-height:32px;transition:background .15s,border-color .15s}
+.skill-button:hover,.skill-button[aria-expanded="true"]{background:#d4e1c8;border-color:#78926a;color:#344d2e}
+.skill-button.pink:hover,.skill-button.pink[aria-expanded="true"]{background:#edd0d9;border-color:#b27d90;color:#713d50}
+.skill-button:focus-visible{outline:2px solid #617854;outline-offset:3px}
+.skill-hint{font-size:10px;line-height:1.6;color:var(--muted);margin:2px 0 0}
+.skill-detail{padding:12px 14px;background:#fbf9f1;border:1px dashed #b7c4a9;min-height:112px}
+.skill-detail strong{font-size:12px;color:#4d6446}
+.skill-detail p{font-size:11px;line-height:1.7;margin:6px 0 0;color:var(--muted)}
+@media(max-width:600px){.skill-button{min-height:44px}.hero-intro{max-width:none}.skill-detail{min-height:130px}}
+@media(prefers-reduced-motion:reduce){.skill-button{transition:none}}

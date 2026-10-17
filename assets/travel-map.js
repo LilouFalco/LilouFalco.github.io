@@ -1,4 +1,4 @@
-/* Progressive enhancement of the two local, offline-generated SVG atlases.
+/* Progressive enhancement of the local, offline-generated world atlas.
    No tiles, external libraries, remote requests, or tracking. */
 (() => {
  'use strict';
@@ -39,7 +39,7 @@
   const pointers=new Map();
   const viewport=document.createElement('div');viewport.className='map-viewport';
   viewport.tabIndex=0;viewport.setAttribute('role','group');
-  viewport.setAttribute('aria-label',index===0?'Carte du monde interactive':'Carte Europe et Maroc interactive');
+  viewport.setAttribute('aria-label','Carte du monde interactive');
   viewport.setAttribute('aria-describedby','map-controls-help');
   svg.setAttribute('role','group');svg.classList.add('map-interactive-svg');
   viewport.append(svg);image.after(viewport);image.hidden=true;
@@ -155,30 +155,6 @@
    else{gesture=null;viewport.classList.remove('is-dragging');}
   }
   viewport.addEventListener('pointerup',end);viewport.addEventListener('pointercancel',end);
-  // Discoverable shortcuts keep tiny destinations easy to reach.
-  if(index===1){
-   const shortcuts=document.createElement('div');shortcuts.className='map-place-shortcuts';
-   const gibraltar=paths.find(p=>p.dataset.country==='GIB');
-   const sicilyLabel=[...svg.querySelectorAll('text')].find(n=>n.textContent==='Sicile');
-   let sicily=null;
-   if(sicilyLabel){
-    const italy=paths.filter(p=>p.dataset.country==='ITA');
-    sicily=italy.reduce((best,p)=>{
-     const box=p.getBBox(),score=Math.hypot(box.x+box.width/2-270,box.y+box.height/2-210);
-     return !best||score<best.score?{path:p,score}:best;
-    },null)?.path;
-    if(sicily)sicily.dataset.place='Sicile · Italie';
-   }
-   for(const [label,path] of [['Gibraltar',gibraltar],['Sicile',sicily]]){
-    if(!path)continue;
-    shortcuts.append(button('⌖ '+label,'Trouver '+label,()=>{
-     const box=path.getBBox();zoom=3;
-     x=box.x+box.width/2-full.w/zoom/2;y=box.y+box.height/2-full.h/zoom/2;
-     render();show(path);
-    }));
-   }
-   controls.after(shortcuts);
-  }
   render();
  }
  const figures=[...document.querySelectorAll('.map-layout figure')];
@@ -189,7 +165,7 @@
   figures.forEach((figure,index)=>setup(figure,index).catch(()=>{
    // The original static map remains usable even if enhancement fails.
    const image=figure.querySelector('img');if(image)image.hidden=false;
-   figure.querySelectorAll('.map-viewport,.map-controls,.map-country-card,.map-place-shortcuts').forEach(el=>el.remove());
+   figure.querySelectorAll('.map-viewport,.map-controls,.map-country-card').forEach(el=>el.remove());
   }));
  }
 })();

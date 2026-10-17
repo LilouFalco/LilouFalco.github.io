@@ -6,8 +6,10 @@ for(const width of [1440,1100,768,390,360]){
  assert.equal((await p.locator('.travel-stories-heading h2').innerText()).replace(/\s+/g,' '),'Mes voyages les plus marquants.');
  const countries=await p.locator('[data-visited]').evaluateAll(es=>es.map(e=>e.dataset.visited));assert.deepEqual(countries,['FRA','ESP','PRT','MAR','GIB','HRV','DEU','ITA','THA','JPN','KOR','VNM']);
  assert.equal(await p.locator('.map-next').innerText(),'▣ Chine · bientôt');
- assert(await p.locator('[data-visited=ITA]').innerText().then(t=>t.includes('Sicile')));
- assert(await p.locator('.map-layout img').evaluateAll(imgs=>imgs.length===2&&imgs.every(i=>i.complete&&i.naturalWidth>0)));
+ assert.equal((await p.locator('[data-visited=ITA]').innerText()).replace('◆','').trim(),'Italie');
+ assert.equal(await p.locator('.map-europe,.map-place-shortcuts').count(),0);
+ assert(!/sicile/i.test(await p.locator('body').innerText()));
+ assert(await p.locator('.map-layout img').evaluateAll(imgs=>imgs.length===1&&imgs.every(i=>i.complete&&i.naturalWidth>0)));
  const mapTop=await p.locator('.world-map-window').boundingBox();const heading=await p.locator('.travel-stories-heading').boundingBox();const timeline=await p.locator('.travel-window').boundingBox();assert(mapTop.y+mapTop.height<heading.y);assert(heading.y+heading.height<timeline.y);
  assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
  await p.locator('#tab-maroc').click();assert((await p.locator('#travel-panel h3').innerText()).includes('Maroc'));

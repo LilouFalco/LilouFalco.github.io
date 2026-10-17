@@ -25,7 +25,7 @@ def make_map(name, bounds, width, height, pixel):
     sx,sy = width/(east-west),height/(north-south)
     def project(lon,lat):
         return round((lon-west)*sx/pixel)*pixel,round((north-lat)*sy/pixel)*pixel
-    svg = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc"><title id="title">Mes destinations, {html.escape(name)}</title><desc id="desc">Les destinations visitées en vert, la Chine en rose hachuré. Gibraltar est signalé par un repère. Italie, Sicile comprise.</desc>']
+    svg = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc"><title id="title">Mes destinations, {html.escape(name)}</title><desc id="desc">Les destinations visitées en vert, la Chine en rose hachuré. Gibraltar est signalé par un repère.</desc>']
     svg.append('<defs><pattern id="sea" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#b9d1c5" stroke-opacity=".45" stroke-width=".7"/></pattern><pattern id="soon" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="#f1d8df"/><path d="M0 0V7" stroke="#bd8195" stroke-width="2"/></pattern></defs>')
     svg.append(f'<rect width="{width}" height="{height}" fill="#e5eee6"/><rect width="{width}" height="{height}" fill="url(#sea)"/>')
     for f in data['features']:
@@ -49,14 +49,6 @@ def make_map(name, bounds, width, height, pixel):
     x,y=project(-5.35257,36.14474)
     if 0<x<width and 0<y<height:
         svg.append(f'<rect data-country="GIB" x="{x-3}" y="{y-3}" width="6" height="6" fill="#435f49" stroke="#fffdf7" stroke-width="1"><title>Gibraltar</title></rect>')
-        if name!='monde':
-            svg.append(f'<path d="M{x-4} {y}H{x-24}V{y+20}" fill="none" stroke="#435f49"/><text x="{x-34}" y="{y+36}" font-family="monospace" font-size="12" fill="#435f49">Gibraltar</text>')
-            # Sicily is part of Italy, not counted as a separate country.
-            italy=next(f for f in data['features'] if f['properties']['adm0_a3']=='ITA')
-            sicily=next(p[0] for p in polygons(italy) if all(12<p[0]<16 and 36<p[1]<39 for p in p[0]))
-            cx=sum(p[0] for p in sicily)/len(sicily);cy=sum(p[1] for p in sicily)/len(sicily)
-            x,y=project(cx,cy)
-            svg.append(f'<path d="M{x} {y+4}v17h18" fill="none" stroke="#435f49"/><text x="{x+21}" y="{y+25}" font-family="monospace" font-size="12" fill="#435f49">Sicile</text>')
     if name=='monde' and 'CHN' in locked:
         china=next(f for f in data['features'] if f['properties']['adm0_a3']=='CHN')
         ring=max(polygons(china),key=lambda p:len(p[0]))[0]
@@ -66,7 +58,6 @@ def make_map(name, bounds, width, height, pixel):
     return ''.join(svg)
 
 (root/'assets/travel-world.svg').write_text(make_map('monde',(-180,-58,180,85),1000,398,2))
-(root/'assets/travel-europe.svg').write_text(make_map('Europe & Maroc',(-15,26,26,58),360,300,.5))
 page=root/'voyages.html'
 s=page.read_text()
 a=s.index('<!-- visited-places:start -->');b=s.index('<!-- visited-places:end -->',a)
@@ -74,4 +65,4 @@ legend='<ul class="map-destinations" aria-label="Destinations visitées">'+''.jo
 legend+='<p class="map-next"><span class="map-lock" aria-hidden="true">▣</span> '+html.escape(' · '.join(p['label'] for p in config['locked']))+'</p>'
 s=s[:a]+'<!-- visited-places:start -->'+legend+s[b:]
 page.write_text(s)
-print('Generated world map, Europe detail and destination list.')
+print('Generated world map and destination list.')

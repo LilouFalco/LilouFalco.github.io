@@ -120,3 +120,37 @@ main:has(>#contact){display:flex;flex-direction:column}
 @media(prefers-reduced-motion:reduce){.project-tab:hover{transform:none}}
 
 .project-instagram{margin-top:18px;min-height:44px;display:inline-flex;align-items:center}
+
+/* Travel save slots: a compact route above one playable destination. */
+.level-select.travel-layout{display:block}
+.travel-timeline.stamp-list{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;padding:28px 32px 23px;border-right:0;border-bottom:1px solid #c9cfbd;background:#f4f0e4}
+.travel-timeline:before{content:'';position:absolute;top:62px;left:10%;right:10%;height:2px;background:repeating-linear-gradient(90deg,#b6c3a8 0 6px,transparent 6px 10px);pointer-events:none}
+.travel-timeline .timeline-stop{border:0;background:none;box-shadow:none;transform:none;min-height:104px;padding:0 2px;gap:0;justify-content:flex-start;color:#637057;transition:transform .18s}
+.travel-timeline .stamp-drawing{width:68px;height:68px;display:grid;place-items:center;border:1px solid #b9c6ac;background:#f9f6ed;box-shadow:3px 3px #dce2d0;margin:0 0 12px}
+.travel-timeline .stamp-icon{width:42px;height:42px}
+.travel-timeline .timeline-stop strong{font-size:16px;line-height:1.2;text-align:center}
+.travel-timeline .timeline-stop small{font-size:9px;letter-spacing:.4px;line-height:1.5;text-align:center;margin-top:5px}
+.travel-timeline .timeline-stop.selected{transform:none;color:#344d2e}
+.travel-timeline .selected .stamp-drawing{background:#d8e9d6;border:2px solid #557149;box-shadow:3px 3px #a7bb96}
+.travel-timeline .selected strong:before{content:'';display:inline-block;width:5px;height:5px;background:#b8778e;margin:0 6px 2px 0}
+.travel-timeline .timeline-stop:not(:disabled):hover{transform:translateY(-3px)}
+.travel-timeline .stamp-locked{opacity:.65;transform:none}
+.travel-timeline .stamp-lock{bottom:-4px;right:-5px}
+.travel-stage{overflow:hidden}
+.level-select .travel-panel{min-height:345px;padding:36px 34% 36px 48px;touch-action:pan-y}
+.level-select .travel-panel h3{font-size:38px;max-width:540px;margin:16px 0}
+.level-select .travel-panel p{max-width:560px;font-size:13px}
+.level-select .travel-tags{max-width:none}
+.level-select .travel-coordinate{max-width:100%;margin-top:24px}
+.level-select .travel-country-icon{position:absolute;right:8%;top:48px;width:130px;height:130px;color:#6c825d;transform:rotate(7deg)}
+.level-select .travel-emote{right:9%;bottom:18px;width:100px;height:100px}
+.travel-controls{display:flex;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid #c9cfbd;background:#eef0e4;padding:16px 28px}
+.travel-controls>div{text-align:center}
+#trip-progress{font:14px var(--pixel);color:#435f49}
+#travel-help{font-size:10px;color:#6b7761;margin:5px 0 0}
+.travel-arrow{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;background:#fffdf7;border:1px solid #7d8c72;box-shadow:3px 3px #c6d1ba;transition:transform .15s;font-size:15px}
+.travel-arrow:not(:disabled):hover{transform:translateY(-2px)}
+.travel-arrow:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+@media(max-width:800px){.travel-timeline.stamp-list{padding:24px 16px 20px;gap:5px}.travel-timeline:before{top:53px}.travel-timeline .stamp-drawing{width:58px;height:58px}.travel-timeline .timeline-stop strong{font-size:13px}.travel-timeline .timeline-stop small{font-size:8px}.level-select .travel-panel{padding:30px 30% 35px 30px;min-height:370px}.level-select .travel-panel h3{font-size:32px}.level-select .travel-country-icon{right:5%;width:95px;height:95px}.level-select .travel-emote{right:5%}}
+@media(max-width:600px){.travel-window .window-bar{flex-wrap:wrap;gap:6px}.travel-timeline.stamp-list{padding:20px 7px 16px;gap:2px}.travel-timeline:before{top:43px}.travel-timeline .timeline-stop{min-height:95px;padding:0}.travel-timeline .stamp-drawing{width:44px;height:44px;margin-bottom:12px;box-shadow:2px 2px #dce2d0}.travel-timeline .stamp-icon,.travel-timeline .stamp-locked .stamp-icon{width:32px;height:32px}.travel-timeline .timeline-stop strong{font-size:10px;line-height:1.3}.travel-timeline .timeline-stop small{font-size:7px;letter-spacing:0;white-space:nowrap}.travel-timeline .stamp-lock{width:18px;height:18px;right:-4px}.travel-timeline .selected strong:before{display:none}.travel-timeline .selected strong{border-bottom:2px solid #b8778e;padding-bottom:2px}.level-select .travel-panel{padding:26px 22px 88px;min-height:440px}.level-select .travel-country-icon{width:52px;height:52px;top:17px;right:16px;transform:none;opacity:.65}.level-select .travel-eyebrow{display:block;padding-right:48px;min-height:28px;font-size:8px}.level-select .travel-panel h3{font-size:31px;position:relative}.level-select .travel-panel p{font-size:12px}.level-select .travel-coordinate{max-width:75%;font-size:8px;line-height:1.7}.level-select .travel-emote{right:7px;bottom:4px;width:84px;height:84px}.travel-controls{padding:14px 13px;gap:10px}#trip-progress{font-size:12px}#travel-help{font-size:9px;max-width:170px;line-height:1.5;margin:5px auto 0}}
+@media(prefers-reduced-motion:reduce){.travel-timeline .timeline-stop,.travel-arrow{transition:none}.travel-timeline .timeline-stop:not(:disabled):hover,.travel-arrow:not(:disabled):hover{transform:none}}

@@ -48,21 +48,66 @@ dialog.addEventListener('close',()=>{dialog.querySelector('video')?.pause();docu
 dialog.addEventListener('keydown',event=>{if(activeProject?.images?.length>1){if(event.key==='ArrowRight'){event.preventDefault();slide(1);}if(event.key==='ArrowLeft'){event.preventDefault();slide(-1);}}});
 }
 const trips={
- thailande:{number:"04",date:"BANGKOK",title:"Thaïlande,<br>un très beau souvenir.",text:"J’ai séjourné à Bangkok et pris le temps de découvrir la ville. J’ai beaucoup aimé la Thaïlande, un pays dont je garde un très beau souvenir.",tags:["Bangkok","Découvertes"],emote:7},
+ thailande:{number:"03",date:"BANGKOK",title:"Thaïlande,<br>un très beau souvenir.",text:"J’ai séjourné à Bangkok et pris le temps de découvrir la ville. J’ai beaucoup aimé la Thaïlande, un pays dont je garde un très beau souvenir.",tags:["Bangkok","Découvertes"],emote:7},
  japon:{number:"01",date:"MAI 2023",title:"Japon, entre pixels<br>et poésie.",text:"À Tokyo et Yokohama, les univers se croisent. L’imaginaire du musée Ghibli, l’effervescence de Shibuya et d’Akihabara, le calme des temples et des jardins. Une escapade entre culture pop et découvertes.",tags:["Tokyo","Yokohama","Culture pop"],emote:12},
  coree:{number:"02",date:"DÉCEMBRE 2023",title:"Corée du Sud,<br>mille contrastes.",text:"De Séoul à Busan, un voyage entre palais, marchés et quartiers créatifs. Hongdae, les ruelles colorées de Gamcheon et le temple Haedong Yonggungsa, au bord de la mer. Des découvertes à chaque détour.",tags:["Séoul","Busan","Art & traditions"],emote:7},
- vietnam:{number:"03",date:"MARS 2026",title:"Vietnam,<br>prendre le temps.",text:"Des rues de Hanoï aux rizières de Pú Luông, puis du kayak dans la baie de Lan Ha aux barques de Trang An. À Hoi An, les lanternes et les ateliers d’artisanat prolongent le voyage. Une parenthèse entre nature et savoir-faire.",tags:["Hanoï","Lan Ha","Hoi An"],emote:3},
+ vietnam:{number:"04",date:"MARS 2026",title:"Vietnam,<br>prendre le temps.",text:"Des rues de Hanoï aux rizières de Pú Luông, puis du kayak dans la baie de Lan Ha aux barques de Trang An. À Hoi An, les lanternes et les ateliers d’artisanat prolongent le voyage. Une parenthèse entre nature et savoir-faire.",tags:["Hanoï","Lan Ha","Hoi An"],emote:3},
 };
 const tripButtons=[...document.querySelectorAll('[data-trip]')];
+const travelWindow=document.querySelector('.level-select');
+const travelPanel=document.querySelector('#travel-panel');
+const tripPrev=document.querySelector('#trip-prev');
+const tripNext=document.querySelector('#trip-next');
+let tripIndex=0;
+let tripAnimation;
 function chooseTrip(button,focus=false){
+ const trip=trips[button?.dataset.trip];
+ if(!trip||!travelPanel)return;
+ tripIndex=tripButtons.indexOf(button);
  tripButtons.forEach(b=>{const selected=b===button;b.setAttribute('aria-selected',String(selected));b.tabIndex=selected?0:-1;b.classList.toggle('selected',selected);});
- const trip=trips[button.dataset.trip];const panel=document.querySelector('#travel-panel');if(!trip||!panel)return;
- panel.setAttribute('aria-labelledby',button.id);
- panel.innerHTML='<span class="travel-eyebrow">CARNET N° '+trip.number+' · '+trip.date+'</span><h3>'+trip.title+'</h3><p>'+trip.text+'</p><div class="travel-tags">'+trip.tags.map(t=>'<span>'+t+'</span>').join('')+'</div><span class="travel-coordinate">SOUVENIRS COLLECTÉS, CURIOSITÉ RECHARGÉE.</span><img src="assets/emote-'+trip.emote+'.png" width="120" height="120" alt="" class="travel-emote">';
- if(focus)button.focus();
+ travelPanel.setAttribute('aria-labelledby',button.id);
+ travelPanel.innerHTML='<span class="travel-eyebrow">CARNET N° '+trip.number+' · '+trip.date+'</span><h3>'+trip.title+'</h3><p>'+trip.text+'</p><div class="travel-tags">'+trip.tags.map(t=>'<span>'+t+'</span>').join('')+'</div><span class="travel-coordinate">SOUVENIRS COLLECTÉS, CURIOSITÉ RECHARGÉE.</span><img src="assets/emote-'+trip.emote+'.png" width="120" height="120" alt="" class="travel-emote">';
+ tripPrev.disabled=tripIndex===0;
+ tripNext.disabled=tripIndex===tripButtons.length-1;
+ document.querySelector('#trip-progress').textContent='ESCALE '+trip.number+' / 04 · '+button.querySelector('strong').textContent;
+ const icon=button.querySelector('.stamp-icon').cloneNode(true);
+ icon.classList.add('travel-country-icon');
+ travelPanel.prepend(icon);
+ tripAnimation?.cancel();
+ if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  tripAnimation=travelPanel.animate([{opacity:.6,transform:'translate3d(8px,0,0)'},{opacity:1,transform:'translate3d(0,0,0)'}],{duration:180,easing:'ease-out'});
+ }
+ if(focus)button.focus({preventScroll:true});
 }
-tripButtons.forEach((button,index)=>{button.tabIndex=index===0?0:-1;button.addEventListener('click',()=>chooseTrip(button));button.addEventListener('keydown',e=>{let next;if(e.key==='ArrowRight'||e.key==='ArrowDown')next=(index+1)%tripButtons.length;if(e.key==='ArrowLeft'||e.key==='ArrowUp')next=(index-1+tripButtons.length)%tripButtons.length;if(e.key==='Home')next=0;if(e.key==='End')next=tripButtons.length-1;if(next!==undefined){e.preventDefault();chooseTrip(tripButtons[next],true);}});});
-
+function stepTrip(direction){const next=tripIndex+direction;if(tripButtons[next])chooseTrip(tripButtons[next]);}
+if(travelWindow){
+ tripButtons.forEach(button=>button.addEventListener('click',()=>chooseTrip(button)));
+ tripPrev.addEventListener('click',()=>stepTrip(-1));
+ tripNext.addEventListener('click',()=>stepTrip(1));
+ travelWindow.addEventListener('keydown',event=>{
+  if(event.altKey||event.ctrlKey||event.metaKey||event.shiftKey)return;
+  let next;
+  const index=tripButtons.includes(event.target)?tripButtons.indexOf(event.target):tripIndex;
+  if(event.key==='ArrowRight')next=Math.min(index+1,tripButtons.length-1);
+  if(event.key==='ArrowLeft')next=Math.max(index-1,0);
+  if(event.key==='Home')next=0;
+  if(event.key==='End')next=tripButtons.length-1;
+  if(next!==undefined){event.preventDefault();chooseTrip(tripButtons[next],event.target.getAttribute('role')==='tab');}
+ });
+ let swipeStart=null;
+ travelPanel.addEventListener('pointerdown',event=>{
+  if(event.pointerType!=='touch'||!event.isPrimary)return;
+  swipeStart={x:event.clientX,y:event.clientY,id:event.pointerId,time:performance.now()};
+ });
+ travelPanel.addEventListener('pointerup',event=>{
+  const start=swipeStart;swipeStart=null;
+  if(!start||start.id!==event.pointerId)return;
+  const dx=event.clientX-start.x,dy=event.clientY-start.y;
+  if(Math.abs(dx)>=45&&Math.abs(dx)>Math.abs(dy)*1.5&&performance.now()-start.time<1000)stepTrip(dx<0?1:-1);
+ });
+ travelPanel.addEventListener('pointercancel',()=>{swipeStart=null;});
+ chooseTrip(tripButtons[0]);
+}
 
 // A shared detail card stays inside the inventory on every screen size.
 const skillButtons=[...document.querySelectorAll('.skill-button')];

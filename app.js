@@ -38,6 +38,7 @@ dialog.addEventListener('keydown',event=>{if(activeProject?.images?.length>1){if
 document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{
  document.querySelectorAll('[data-filter]').forEach(b=>{const selected=b===button;b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',String(selected));});
  document.querySelectorAll('[data-category]').forEach(card=>{card.hidden=button.dataset.filter!=='all'&&card.dataset.category!==button.dataset.filter;});
+ document.querySelector('#filter-status').textContent=document.querySelectorAll('[data-category]:not([hidden])').length+' créations affichées';
 }));
 const trips={
  japon:{number:"01",date:"MAI 2023",title:"Japon, entre pixels<br>et poésie.",text:"À Tokyo et Yokohama, les univers se croisent. L’imaginaire du musée Ghibli, l’effervescence de Shibuya et d’Akihabara, le calme des temples et des jardins. Une escapade entre culture pop et découvertes.",tags:["Tokyo","Yokohama","Culture pop"],emote:12},

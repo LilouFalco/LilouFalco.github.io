@@ -73,13 +73,49 @@ function closeSkill(){
  skillDetail.querySelector('strong').textContent='Un peu plus en détail';
  skillDetail.querySelector('p').textContent='Choisissez une compétence pour découvrir comment je la mets en pratique.';
 }
+const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+function playSkill(button){
+ button.classList.remove('pop');
+ if(reduceMotion.matches)return;
+ void button.offsetWidth;
+ button.classList.add('pop');
+ button.addEventListener('animationend',()=>button.classList.remove('pop'),{once:true});
+}
 skillButtons.forEach(button=>{
  button.addEventListener('pointerenter',event=>{if(event.pointerType==='mouse')showSkill(button);});
  button.addEventListener('focus',()=>{if(button.matches(':focus-visible'))showSkill(button);});
  button.addEventListener('click',()=>{
+  playSkill(button);
   if(selectedSkill===button&&window.matchMedia('(hover: none)').matches)closeSkill();
   else showSkill(button);
  });
 });
 document.addEventListener('keydown',event=>{if(event.key==='Escape')closeSkill();});
 document.addEventListener('click',event=>{if(!event.target.closest('.inventory'))closeSkill();});
+
+// Creations: three independent company tabs, one panel at a time.
+const projectTabs=[...document.querySelectorAll('.project-tab')];
+function chooseProjectTab(tab,{focus=false,updateHash=true}={}){
+ projectTabs.forEach(item=>{
+  const on=item===tab;
+  item.setAttribute('aria-selected',String(on));item.tabIndex=on?0:-1;item.classList.toggle('selected',on);
+  const panel=document.getElementById(item.getAttribute('aria-controls'));if(panel)panel.hidden=!on;
+ });
+ if(focus)tab.focus();
+ if(updateHash&&history.replaceState)history.replaceState(null,'','#'+tab.dataset.tab);
+}
+projectTabs.forEach((tab,index)=>{
+ tab.addEventListener('click',()=>chooseProjectTab(tab));
+ tab.addEventListener('keydown',e=>{
+  let next;const n=projectTabs.length;
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')next=(index+1)%n;
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')next=(index-1+n)%n;
+  if(e.key==='Home')next=0;if(e.key==='End')next=n-1;
+  if(next!==undefined){e.preventDefault();chooseProjectTab(projectTabs[next],{focus:true});}
+ });
+});
+function tabFromHash(){
+ const tab=projectTabs.find(item=>item.dataset.tab===location.hash.slice(1));
+ if(tab)chooseProjectTab(tab,{updateHash:false});
+}
+if(projectTabs.length){tabFromHash();window.addEventListener('hashchange',tabFromHash);}

@@ -33,7 +33,7 @@ const base=process.env.BASE||'http://localhost:18743';
   if(width>600){assert(cursor.includes('cursor-heart.png'));assert(linkCursor.includes('cursor-hand.png'));}
   else{assert(!cursor.includes('cursor-'));assert(!linkCursor.includes('cursor-'));}
   await p.getByRole('link',{name:'Créations',exact:true}).click();
-  await p.waitForURL(/projets(?:\.html)?$/);await p.waitForTimeout(650);
+  await p.waitForURL(/projets(?:\.html|\/)?$/);await p.waitForTimeout(650);
   assert.equal(await p.locator('html.scene-arriving,html.scene-leaving').count(),0);
   if(!fallback){
    assert((await p.evaluate(()=>window.sceneEvents)).includes('native'));
@@ -50,7 +50,7 @@ const base=process.env.BASE||'http://localhost:18743';
   // Hash-only link must not close the scene.
   await p.locator('footer a[href="#top"]').click();assert.equal(await p.locator('html.scene-leaving').count(),0);
   await p.emulateMedia({reducedMotion:'reduce'});
-  await p.getByRole('link',{name:'Parcours',exact:true}).click();await p.waitForURL(/parcours(?:\.html)?$/);await p.waitForTimeout(300);
+  await p.getByRole('link',{name:'Parcours',exact:true}).click();await p.waitForURL(/parcours(?:\.html|\/)?$/);await p.waitForTimeout(300);
   assert.equal(await p.locator('html.scene-arriving,html.scene-leaving').count(),0);
   if(!fallback){
    const timings=await p.evaluate(()=>window.sceneTimings);
@@ -77,6 +77,6 @@ const base=process.env.BASE||'http://localhost:18743';
  // Storage-denied fallback must stay normal navigation, never blank.
  const blocked=await b.newContext();
  await blocked.addInitScript(()=>{delete window.CSSViewTransitionRule;Object.defineProperty(window,'sessionStorage',{get(){throw new DOMException('blocked','SecurityError')}})});
- const bp=await blocked.newPage();await bp.goto(base+'/index.html');await bp.getByRole('link',{name:'Créations',exact:true}).click();await bp.waitForURL(/projets(?:\.html)?$/);assert.equal(await bp.locator('html.scene-leaving').count(),0);await blocked.close();
+ const bp=await blocked.newPage();await bp.goto(base+'/index.html');await bp.getByRole('link',{name:'Créations',exact:true}).click();await bp.waitForURL(/projets(?:\.html|\/)?$/);assert.equal(await bp.locator('html.scene-leaving').count(),0);await blocked.close();
  await b.close();console.log('Scene frames and storage-restricted navigation pass');
 })().catch(e=>{console.error(e);process.exit(1)});

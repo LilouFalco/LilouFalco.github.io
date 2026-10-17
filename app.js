@@ -16,8 +16,8 @@ function openProject(key,button){
  const project=projectData[key];if(!project||!dialog)return;
  lastProject=button;activeProject=project;carouselIndex=0;
  const visual=project.video
- ? '<video controls playsinline preload="metadata" poster="assets/'+project.video+'.jpg" aria-label="'+project.title+'"><source src="assets/'+project.video+'.mp4" type="video/mp4">Votre navigateur ne prend pas en charge cette vidéo.</video>'
- : '<img id="carousel-image" src="assets/'+project.images[0]+'" alt="'+project.title+' · visuel 1">'+(project.images.length>1?'<div class="carousel-controls"><button id="prev-slide" aria-label="Visuel précédent">Précédent</button><span id="carousel-count" aria-live="polite">1 / '+project.images.length+'</span><button id="next-slide" aria-label="Visuel suivant">Suivant</button></div>':'');
+ ? '<video controls playsinline preload="metadata" poster="/assets/'+project.video+'.jpg" aria-label="'+project.title+'"><source src="/assets/'+project.video+'.mp4" type="video/mp4">Votre navigateur ne prend pas en charge cette vidéo.</video>'
+ : '<img id="carousel-image" src="/assets/'+project.images[0]+'" alt="'+project.title+' · visuel 1">'+(project.images.length>1?'<div class="carousel-controls"><button id="prev-slide" aria-label="Visuel précédent">Précédent</button><span id="carousel-count" aria-live="polite">1 / '+project.images.length+'</span><button id="next-slide" aria-label="Visuel suivant">Suivant</button></div>':'');
  document.querySelector('#modal-content').innerHTML='<div class="modal-layout"><div class="modal-visual">'+visual+'</div><div class="modal-text"><span class="project-client">'+project.client+'</span><h2 id="modal-title">'+project.title+'</h2><p>'+project.description+'</p><h3>MON RÔLE</h3><p>'+project.role+'</p><div class="tags">'+project.tags.map(tag=>'<span>'+tag+'</span>').join('')+'</div><p class="modal-credit">Création réalisée pour Arbitryum. Les interviews ont été filmées et montées par Lilou Falco.</p></div></div>';
  if(project.instagram){
   const link=document.createElement('a');
@@ -36,7 +36,7 @@ function openProject(key,button){
 function slide(direction){
  carouselIndex=(carouselIndex+direction+activeProject.images.length)%activeProject.images.length;
  const image=document.querySelector('#carousel-image');
- image.src='assets/'+activeProject.images[carouselIndex];
+ image.src='/assets/'+activeProject.images[carouselIndex];
  image.alt=activeProject.title+' · visuel '+(carouselIndex+1);
  document.querySelector('#carousel-count').textContent=(carouselIndex+1)+' / '+activeProject.images.length;
 }
@@ -67,7 +67,7 @@ function chooseTrip(button,focus=false){
  tripIndex=tripButtons.indexOf(button);
  tripButtons.forEach(b=>{const selected=b===button;b.setAttribute('aria-selected',String(selected));b.tabIndex=selected?0:-1;b.classList.toggle('selected',selected);});
  travelPanel.setAttribute('aria-labelledby',button.id);
- travelPanel.innerHTML='<span class="travel-eyebrow">CARNET N° '+trip.number+' · '+trip.date+'</span><h3>'+trip.title+'</h3><p>'+trip.text+'</p><div class="travel-tags">'+trip.tags.map(t=>'<span>'+t+'</span>').join('')+'</div><span class="travel-coordinate">SOUVENIRS COLLECTÉS, CURIOSITÉ RECHARGÉE.</span><img src="assets/emote-'+trip.emote+'.png" width="120" height="120" alt="" class="travel-emote">';
+ travelPanel.innerHTML='<span class="travel-eyebrow">CARNET N° '+trip.number+' · '+trip.date+'</span><h3>'+trip.title+'</h3><p>'+trip.text+'</p><div class="travel-tags">'+trip.tags.map(t=>'<span>'+t+'</span>').join('')+'</div><span class="travel-coordinate">SOUVENIRS COLLECTÉS, CURIOSITÉ RECHARGÉE.</span><img src="/assets/emote-'+trip.emote+'.png" width="120" height="120" alt="" class="travel-emote">';
  tripPrev.disabled=tripIndex===0;
  tripNext.disabled=tripIndex===tripButtons.length-1;
  document.querySelector('#trip-progress').textContent='ESCALE '+trip.number+' / '+String(tripButtons.length).padStart(2,'0')+' · '+button.querySelector('strong').textContent;

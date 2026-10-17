@@ -30,7 +30,7 @@ const base=process.env.BASE||'http://localhost:18743';
   assert.equal(await p.evaluate(()=>getComputedStyle(document.body,'::before').content),'none');
   const cursor=await p.locator('body').evaluate(e=>getComputedStyle(e).cursor);
   const linkCursor=await p.locator('nav a').first().evaluate(e=>getComputedStyle(e).cursor);
-  if(width>600){assert(cursor.includes('cursor-arrow.png'));assert(linkCursor.includes('cursor-heart.png'));}
+  if(width>600){assert(cursor.includes('cursor-heart.png'));assert(linkCursor.includes('cursor-hand.png'));}
   else{assert(!cursor.includes('cursor-'));assert(!linkCursor.includes('cursor-'));}
   await p.getByRole('link',{name:'Créations',exact:true}).click();
   await p.waitForURL(/projets(?:\.html)?$/);await p.waitForTimeout(650);
